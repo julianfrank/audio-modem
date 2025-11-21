@@ -10,14 +10,14 @@ console.log('='.repeat(70));
 console.log('');
 
 // Read the HTML file
-const htmlPath = path.join(__dirname, 'audio-transfer.html');
+const htmlPath = path.join(__dirname, 'index.html');
 let htmlContent;
 
 try {
     htmlContent = fs.readFileSync(htmlPath, 'utf8');
-    console.log('✓ Successfully loaded audio-transfer.html');
+    console.log('✓ Successfully loaded index.html');
 } catch (error) {
-    console.error('✗ Failed to load audio-transfer.html:', error.message);
+    console.error('✗ Failed to load index.html:', error.message);
     process.exit(1);
 }
 

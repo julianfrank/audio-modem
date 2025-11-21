@@ -175,8 +175,8 @@ Automated validation script that checks:
 
 ### 10. Audio Specifications ✓
 - FSK modulation (4.5kHz/6.5kHz)
-- Preamble (5.5kHz, 500ms)
-- Postamble (200ms silence)
+- Preamble (5.5kHz, 5000ms)
+- Postamble (2000ms silence)
 - Baud rate (100 bps)
 - Frame structure (start/8 data/parity/stop)
 - CRC16 checksums
@@ -186,7 +186,7 @@ Automated validation script that checks:
 ## File Metrics
 
 ```
-File: audio-transfer.html
+File: index.html
 Size: 136.52 KB
 Lines: 3,660
 Classes: 13

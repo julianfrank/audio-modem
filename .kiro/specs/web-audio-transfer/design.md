@@ -79,8 +79,8 @@ class AudioEncoder {
 - Bit 0: 4500 Hz carrier frequency
 - Bit 1: 6500 Hz carrier frequency
 - Baud rate: 100 bits per second (10ms per bit)
-- Preamble: 500ms synchronization tone at 5500 Hz
-- Postamble: 200ms silence
+- Preamble: 5000ms synchronization tone at 5500 Hz
+- Postamble: 2000ms silence
 
 ### 4. Audio Decoder
 **Responsibility**: Converts FSK-modulated audio signals back to binary data
@@ -155,7 +155,7 @@ interface ProgressInfo {
 ```
 [Preamble][Header][Chunk 0][Chunk 1]...[Chunk N][Postamble]
 
-Preamble: 500ms @ 5500Hz
+Preamble: 5000ms @ 5500Hz
 Header: 
   - Magic bytes (2 bytes): 0xAA 0x55
   - Data type (1 byte): 0x01=text, 0x02=file

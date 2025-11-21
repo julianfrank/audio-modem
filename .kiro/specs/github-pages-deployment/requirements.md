@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document specifies the requirements for implementing automated deployment of the audio-transfer.html application to GitHub Pages using GitHub Actions. The system will enable continuous deployment whenever changes are pushed to the repository, making the application publicly accessible via GitHub Pages.
+This document specifies the requirements for implementing automated deployment of the index.html application to GitHub Pages using GitHub Actions. The system will enable continuous deployment whenever changes are pushed to the repository, making the application publicly accessible via GitHub Pages.
 
 ## Glossary
 
@@ -10,7 +10,7 @@ This document specifies the requirements for implementing automated deployment o
 - **GitHub Pages**: GitHub's static site hosting service that serves web content directly from a repository
 - **Workflow File**: A YAML configuration file that defines automated processes in GitHub Actions
 - **Deployment System**: The automated system comprising the GitHub Actions workflow and repository configuration
-- **Repository**: The Git repository containing the audio-transfer.html application
+- **Repository**: The Git repository containing the index.html application
 
 ## Requirements
 
@@ -21,7 +21,7 @@ This document specifies the requirements for implementing automated deployment o
 #### Acceptance Criteria
 
 1. WHEN a developer pushes changes to the main branch THEN the Deployment System SHALL trigger a GitHub Actions workflow automatically
-2. WHEN the workflow executes THEN the Deployment System SHALL deploy the audio-transfer.html file as index.html to GitHub Pages
+2. WHEN the workflow executes THEN the Deployment System SHALL deploy the index.html file to GitHub Pages
 3. WHEN deployment completes successfully THEN the Deployment System SHALL make the application accessible at the repository's GitHub Pages root URL
 4. WHEN deployment fails THEN the Deployment System SHALL report the failure status in the GitHub Actions interface
 5. WHEN multiple pushes occur in quick succession THEN the Deployment System SHALL queue deployments and execute them sequentially

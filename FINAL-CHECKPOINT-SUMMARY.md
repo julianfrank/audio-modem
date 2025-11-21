@@ -55,7 +55,7 @@ All 13 core classes implemented and verified:
 ## Implementation Status
 
 ### File Metrics
-- **File**: audio-transfer.html
+- **File**: index.html
 - **Size**: 136.52 KB
 - **Lines**: 3,660
 - **External Dependencies**: 0
@@ -130,7 +130,7 @@ All property-based test tasks are marked as optional (with `*` suffix) per the t
 ## Next Steps
 
 The implementation is complete. Users can:
-1. Open `audio-transfer.html` in any modern browser
+1. Open `index.html` in any modern browser
 2. Use the application offline without any setup
 3. Transfer text and files between devices using audio
 4. Refer to test documentation for validation evidence

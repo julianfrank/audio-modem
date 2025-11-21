@@ -13,7 +13,7 @@ This document provides comprehensive validation of the Web Audio Transfer system
 **Requirements**: 2.2, 3.1, 3.2, 4.1-4.5, 5.1-5.5, 6.1, 6.2, 7.1-7.5
 
 **Test Steps**:
-1. Open audio-transfer.html in browser
+1. Open index.html in browser
 2. Select Emitter mode
 3. Enter text in text input field
 4. Click "Send Data" button
@@ -28,7 +28,7 @@ This document provides comprehensive validation of the Web Audio Transfer system
 - [x] Text input field present and functional
 - [x] Send button enables when text is entered
 - [x] Audio encoding generates FSK signals (4.5kHz/6.5kHz)
-- [x] Preamble generation (5.5kHz, 500ms)
+- [x] Preamble generation (5.5kHz, 5000ms)
 - [x] Header encoding with metadata
 - [x] Data chunking (255 byte chunks)
 - [x] Checksum calculation (CRC16)
@@ -44,7 +44,7 @@ This document provides comprehensive validation of the Web Audio Transfer system
 **Requirements**: 2.3, 3.1, 3.2, 4.1-4.5, 5.1-5.5, 6.3, 7.1-7.5
 
 **Test Steps**:
-1. Open audio-transfer.html in browser (Emitter)
+1. Open index.html in browser (Emitter)
 2. Select Emitter mode
 3. Choose a file using file selector
 4. Verify file size warning for files > 1MB
@@ -71,7 +71,7 @@ This document provides comprehensive validation of the Web Audio Transfer system
 
 #### 3.1 Microphone Permission Denied
 **Test Steps**:
-1. Open audio-transfer.html
+1. Open index.html
 2. Select Receiver mode
 3. Deny microphone permission when prompted
 4. Verify clear error message with instructions
@@ -176,7 +176,7 @@ This document provides comprehensive validation of the Web Audio Transfer system
 
 **File Structure Analysis**:
 ```
-audio-transfer.html
+index.html
 ├── HTML Structure
 ├── <style> (Inline CSS)
 │   ├── Layout styles
@@ -205,7 +205,7 @@ audio-transfer.html
 **Requirements**: 7.5
 
 **Test Steps**:
-1. Load audio-transfer.html in browser
+1. Load index.html in browser
 2. Disconnect from internet
 3. Verify all functionality works offline
 4. Test mode switching
@@ -287,8 +287,8 @@ audio-transfer.html
 **Technical Validation**:
 - [x] Frequency range: 4kHz - 8kHz (bypasses noise cancellation)
 - [x] FSK modulation: 4500Hz (bit 0), 6500Hz (bit 1)
-- [x] Preamble: 5500Hz, 500ms duration
-- [x] Postamble: 200ms silence
+- [x] Preamble: 5500Hz, 5000ms duration
+- [x] Postamble: 2000ms silence
 - [x] Baud rate: 100 bits/second
 - [x] Bit duration: 10ms per bit
 - [x] Frame structure: start bit + 8 data bits + parity + stop bit

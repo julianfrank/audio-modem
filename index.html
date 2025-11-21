@@ -1111,11 +1111,11 @@
             }
 
             /**
-             * Generate preamble - 500ms synchronization tone at 5500 Hz
+             * Generate preamble - 5000ms synchronization tone at 5500 Hz
              * @returns {Float32Array} Preamble audio samples
              */
             generatePreamble() {
-                const duration = 0.5; // 500ms
+                const duration = 5.0; // 5000ms (5 seconds)
                 const samples = Math.floor(this.sampleRate * duration);
                 const preamble = new Float32Array(samples);
                 
@@ -1128,11 +1128,11 @@
             }
 
             /**
-             * Generate postamble - 200ms silence
+             * Generate postamble - 2000ms silence
              * @returns {Float32Array} Postamble audio samples (silence)
              */
             generatePostamble() {
-                const duration = 0.2; // 200ms
+                const duration = 2.0; // 2000ms (2 seconds)
                 const samples = Math.floor(this.sampleRate * duration);
                 return new Float32Array(samples); // All zeros = silence
             }
@@ -2353,7 +2353,7 @@
                 this.errorCallbacks = [];
                 
                 // Preamble detection
-                this.preambleDetectionWindow = Math.floor(0.5 * sampleRate); // 500ms window
+                this.preambleDetectionWindow = Math.floor(5.0 * sampleRate); // 5000ms window
                 this.preambleConfirmationCount = 0;
                 this.preambleConfirmationThreshold = 10; // Need multiple confirmations
                 

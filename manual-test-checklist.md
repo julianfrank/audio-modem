@@ -8,8 +8,8 @@
 - Quiet environment for testing
 
 ## Test Session Setup
-1. Open `audio-transfer.html` in first browser window (Emitter)
-2. Open `audio-transfer.html` in second browser window (Receiver)
+1. Open `index.html` in first browser window (Emitter)
+2. Open `index.html` in second browser window (Receiver)
 3. Position devices so receiver's microphone can hear emitter's speakers
 4. Adjust volume to moderate level (not too loud, not too quiet)
 
@@ -186,7 +186,7 @@
 
 ### Steps:
 1. **File Inspection**:
-   - [ ] Open `audio-transfer.html` in text editor
+   - [ ] Open `index.html` in text editor
    - [ ] Verify all CSS is within `<style>` tags
    - [ ] Verify all JavaScript is within `<script>` tags
    - [ ] Search for external references:
@@ -200,7 +200,7 @@
    - [ ] Open browser DevTools (F12)
    - [ ] Go to Network tab
    - [ ] Clear network log
-   - [ ] Load `audio-transfer.html`
+   - [ ] Load `index.html`
    - [ ] Verify only one request (the HTML file itself)
    - [ ] Verify no additional network requests
 
@@ -213,7 +213,7 @@
 
 ### Steps:
 1. **Setup**:
-   - [ ] Load `audio-transfer.html` in browser
+   - [ ] Load `index.html` in browser
    - [ ] Disconnect from internet (turn off WiFi/unplug ethernet)
 
 2. **Test All Features**:

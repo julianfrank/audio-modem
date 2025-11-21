@@ -19,7 +19,7 @@ This project uses GitHub Actions for automatic deployment to GitHub Pages.
 
 2. **Automatic Deployment**:
    - Every push to the `main` branch automatically triggers deployment
-   - The workflow copies `audio-transfer.html` to `index.html` for deployment
+   - The workflow deploys `index.html` directly to GitHub Pages
    - View deployment status in the Actions tab
 
 3. **Manual Deployment**:
@@ -34,7 +34,7 @@ This project uses GitHub Actions for automatic deployment to GitHub Pages.
 
 ## Local Development
 
-Simply open `audio-transfer.html` in a web browser to run the application locally.
+Simply open `index.html` in a web browser to run the application locally.
 
 ## Features
 

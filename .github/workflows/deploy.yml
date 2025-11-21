@@ -24,7 +24,7 @@ jobs:
       - name: Prepare deployment directory
         run: |
           mkdir -p _site
-          cp audio-transfer.html _site/index.html
+          cp index.html _site/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

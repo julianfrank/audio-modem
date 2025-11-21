@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design specifies the implementation of automated GitHub Pages deployment for the audio-transfer.html application using GitHub Actions. The solution will create a workflow that automatically deploys the application to GitHub Pages as index.html whenever changes are pushed to the main branch, making the application publicly accessible without manual intervention at the root URL.
+This design specifies the implementation of automated GitHub Pages deployment for the index.html application using GitHub Actions. The solution will create a workflow that automatically deploys the application to GitHub Pages whenever changes are pushed to the main branch, making the application publicly accessible without manual intervention at the root URL.
 
 ## Architecture
 
@@ -116,7 +116,7 @@ with:                    # Action inputs (optional)
 **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
 ### Property 4: Deployment artifact contains correct files
-*For any* deployment artifact, it should include the application as index.html (copied from audio-transfer.html) and exclude development files (.git directory, test files, development metadata).
+*For any* deployment artifact, it should include the application as index.html and exclude development files (.git directory, test files, development metadata).
 **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
 
 ### Property 5: File structure preserved for web serving
@@ -150,7 +150,7 @@ with:                    # Action inputs (optional)
    - Resolution: Enable GitHub Pages in repository settings (Settings → Pages → Source: GitHub Actions)
 
 3. **File Not Found Errors**
-   - Cause: audio-transfer.html missing or path incorrect
+   - Cause: index.html missing or path incorrect
    - Detection: Workflow fails during artifact upload
    - Resolution: Verify file exists and path is correct
 
@@ -214,7 +214,7 @@ Property-based tests will verify the deployment system's correctness:
 4. **Property Test 4: Artifact Content Verification**
    - **Feature: github-pages-deployment, Property 4: Deployment artifact contains correct files**
    - Test: Inspect deployed site for required files and absence of excluded files
-   - Validation: index.html present (copied from audio-transfer.html), .git and test files not accessible
+   - Validation: index.html present, .git and test files not accessible
    - Minimum iterations: 3 deployments
 
 5. **Property Test 5: File Structure Verification**
@@ -323,7 +323,7 @@ The application will be served as index.html, making it the default page when vi
 The deployment will maintain the following structure:
 ```
 / (root)
-  └── index.html (copied from audio-transfer.html)
+  └── index.html
 ```
 
 This ensures the application is directly accessible at the root URL without needing to specify a filename.

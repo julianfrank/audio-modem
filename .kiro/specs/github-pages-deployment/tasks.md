@@ -21,7 +21,7 @@
 
   - Add checkout step using actions/checkout@v4
   - Add setup pages step using actions/configure-pages@v4
-  - Add step to copy audio-transfer.html to index.html
+  - Add step to copy index.html to deployment directory
   - Add upload artifact step using actions/upload-pages-artifact@v3
   - Add deploy step using actions/deploy-pages@v4
   - Configure artifact path to deploy from
@@ -77,7 +77,7 @@
 - [x] 6. Test sequential deployments
 
 
-  - Make a small change to audio-transfer.html
+  - Make a small change to index.html
   - Push to main and verify automatic deployment
   - Make another change and push again
   - Verify both deployments execute in order

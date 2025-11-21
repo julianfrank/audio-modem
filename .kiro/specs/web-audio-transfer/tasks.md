@@ -69,8 +69,8 @@
 
   - Set up Web Audio API context and nodes
   - Implement FSK bit encoding (4500 Hz for 0, 6500 Hz for 1)
-  - Write preamble generation (500ms @ 5500 Hz)
-  - Write postamble generation (200ms silence)
+  - Write preamble generation (5000ms @ 5500 Hz)
+  - Write postamble generation (2000ms silence)
   - Implement header encoding (magic bytes, type, filename, chunk count, size, checksum)
   - Implement chunk encoding with start/stop bits and parity
   - Write main encode function that assembles complete transmission
