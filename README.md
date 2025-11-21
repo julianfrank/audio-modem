@@ -4,7 +4,7 @@ Transfer files and text using sound waves through your browser.
 
 ## Live Demo
 
-The application is automatically deployed to GitHub Pages: [View Live Demo](https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/)
+The application is automatically deployed to GitHub Pages: [View Live Demo](https://julianfrank.github.io/audio-modem/)
 
 ## Deployment
 
@@ -30,7 +30,7 @@ This project uses GitHub Actions for automatic deployment to GitHub Pages.
 
 ### Deployment Status
 
-![Deployment Status](https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/actions/workflows/deploy.yml/badge.svg)
+![Deployment Status](https://github.com/julianfrank/audio-modem/actions/workflows/deploy.yml/badge.svg)
 
 ## Local Development
 
