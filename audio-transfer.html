@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Audio File Transfer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .mode-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn:hover:not(:disabled) {
+            background: #f0f4ff;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .mode-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .mode-content {
+            display: none;
+        }
+
+        .mode-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            padding: 8px 16px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .listening-indicator {
+            text-align: center;
+            padding: 30px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .listening-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            border: 4px solid #667eea;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .listening-text {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .received-data {
+            margin-top: 20px;
+        }
+
+        .data-display {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .data-display.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-style: italic;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-details {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .status-message.active {
+            display: block;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .mode-selection {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Web Audio File Transfer</h1>
+        <p class="subtitle">Transfer files and text using sound waves</p>
+
+        <!-- Mode Selection -->
+        <div class="mode-selection">
+            <button class="mode-btn" id="emitterBtn" data-mode="emitter">
+                📤 Emitter
+            </button>
+            <button class="mode-btn" id="receiverBtn" data-mode="receiver">
+                📥 Receiver
+            </button>
+        </div>
+
+        <!-- Emitter Mode UI -->
+        <div class="mode-content" id="emitterMode">
+            <div class="input-group">
+                <label for="textInput">Enter Text:</label>
+                <textarea id="textInput" placeholder="Type your message here..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="fileInput">Or Select a File:</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput">
+                </div>
+            </div>
+
+            <button class="send-btn" id="sendBtn" disabled>
+                Send Data
+            </button>
+
+            <!-- Progress Display for Emitter -->
+            <div class="progress-container" id="emitterProgress">
+                <div class="progress-label">
+                    <span>Transmitting...</span>
+                    <span id="emitterPercentage">0%</span>
+                </div>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar" id="emitterProgressBar"></div>
+                </div>
+                <div class="progress-details" id="emitterDetails">
+                    0 / 0 bytes
+                </div>
+            </div>
+
+            <!-- Status Messages for Emitter -->
+            <div class="status-message" id="emitterStatus"></div>
+        </div>
+
+        <!-- Receiver Mode UI -->
+        <div class="mode-content" id="receiverMode">
+            <div class="listening-indicator">
+                <div class="listening-icon"></div>
+                <div class="listening-text">Listening for transmission...</div>
+            </div>
+
+            <!-- Progress Display for Receiver -->
+            <div class="progress-container" id="receiverProgress">
+                <div class="progress-label">
+                    <span>Receiving...</span>
+                    <span id="receiverPercentage">0%</span>
+                </div>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar" id="receiverProgressBar"></div>
+                </div>
+                <div class="progress-details" id="receiverDetails">
+                    0 / 0 bytes
+                </div>
+            </div>
+
+            <!-- Received Data Display -->
+            <div class="received-data">
+                <label>Received Data:</label>
+                <div class="data-display empty" id="dataDisplay">
+                    No data received yet
+                </div>
+            </div>
+
+            <!-- Status Messages for Receiver -->
+            <div class="status-message" id="receiverStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        // Application will be implemented in subsequent tasks
+        // This script section provides the structure for future implementation
+        
+        // Mode Controller placeholder
+        class ModeController {
+            constructor() {
+                this.currentMode = null;
+                this.isLocked = false;
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('emitterBtn').addEventListener('click', () => {
+                    if (!this.isLocked) {
+                        this.setMode('emitter');
+                    }
+                });
+
+                document.getElementById('receiverBtn').addEventListener('click', () => {
+                    if (!this.isLocked) {
+                        this.setMode('receiver');
+                    }
+                });
+            }
+
+            setMode(mode) {
+                this.currentMode = mode;
+                
+                // Update button states
+                const emitterBtn = document.getElementById('emitterBtn');
+                const receiverBtn = document.getElementById('receiverBtn');
+                
+                emitterBtn.classList.remove('active');
+                receiverBtn.classList.remove('active');
+                
+                if (mode === 'emitter') {
+                    emitterBtn.classList.add('active');
+                } else if (mode === 'receiver') {
+                    receiverBtn.classList.add('active');
+                }
+                
+                // Show/hide mode content
+                document.getElementById('emitterMode').classList.remove('active');
+                document.getElementById('receiverMode').classList.remove('active');
+                
+                if (mode === 'emitter') {
+                    document.getElementById('emitterMode').classList.add('active');
+                } else if (mode === 'receiver') {
+                    document.getElementById('receiverMode').classList.add('active');
+                }
+            }
+
+            getCurrentMode() {
+                return this.currentMode;
+            }
+
+            lockMode() {
+                this.isLocked = true;
+                document.getElementById('emitterBtn').disabled = true;
+                document.getElementById('receiverBtn').disabled = true;
+            }
+
+            unlockMode() {
+                this.isLocked = false;
+                document.getElementById('emitterBtn').disabled = false;
+                document.getElementById('receiverBtn').disabled = false;
+            }
+        }
+
+        // DataProcessor class
+        class DataProcessor {
+            constructor() {
+                this.chunkSize = 255; // Maximum chunk size in bytes
+            }
+
+            /**
+             * Prepare text data for transmission
+             * @param {string} text - The text to prepare
+             * @returns {Object} PreparedData object
+             */
+            prepareText(text) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(text);
+                const checksum = this.calculateChecksum(data);
+                
+                return {
+                    type: 'text',
+                    filename: null,
+                    data: data,
+                    checksum: checksum
+                };
+            }
+
+            /**
+             * Prepare file data for transmission
+             * @param {File} file - The file to prepare
+             * @returns {Promise<Object>} Promise resolving to PreparedData object
+             */
+            async prepareFile(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        const arrayBuffer = event.target.result;
+                        const data = new Uint8Array(arrayBuffer);
+                        const checksum = this.calculateChecksum(data);
+                        
+                        resolve({
+                            type: 'file',
+                            filename: file.name,
+                            data: data,
+                            checksum: checksum
+                        });
+                    };
+                    
+                    reader.onerror = () => {
+                        reject(new Error('Failed to read file'));
+                    };
+                    
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+
+            /**
+             * Split data into chunks
+             * @param {Uint8Array} data - The data to chunk
+             * @param {number} chunkSize - Size of each chunk (default: 255)
+             * @returns {Array} Array of Chunk objects
+             */
+            chunkData(data, chunkSize = this.chunkSize) {
+                const chunks = [];
+                const totalChunks = Math.ceil(data.length / chunkSize);
+                
+                for (let i = 0; i < totalChunks; i++) {
+                    const start = i * chunkSize;
+                    const end = Math.min(start + chunkSize, data.length);
+                    const chunkData = data.slice(start, end);
+                    
+                    chunks.push({
+                        index: i,
+                        total: totalChunks,
+                        data: chunkData,
+                        checksum: this.calculateChecksum(chunkData)
+                    });
+                }
+                
+                return chunks;
+            }
+
+            /**
+             * Reconstruct data from chunks
+             * @param {Array} chunks - Array of Chunk objects
+             * @returns {Uint8Array} Reconstructed data
+             */
+            reconstructData(chunks) {
+                // Sort chunks by index to ensure correct order
+                const sortedChunks = chunks.slice().sort((a, b) => a.index - b.index);
+                
+                // Calculate total size
+                let totalSize = 0;
+                for (const chunk of sortedChunks) {
+                    totalSize += chunk.data.length;
+                }
+                
+                // Create result array
+                const result = new Uint8Array(totalSize);
+                
+                // Copy chunk data into result
+                let offset = 0;
+                for (const chunk of sortedChunks) {
+                    result.set(chunk.data, offset);
+                    offset += chunk.data.length;
+                }
+                
+                return result;
+            }
+
+            /**
+             * Calculate CRC16 checksum for data
+             * @param {Uint8Array} data - The data to checksum
+             * @returns {number} 16-bit checksum value
+             */
+            calculateChecksum(data) {
+                // CRC16-CCITT polynomial: 0x1021
+                const polynomial = 0x1021;
+                let crc = 0xFFFF;
+                
+                for (let i = 0; i < data.length; i++) {
+                    crc ^= (data[i] << 8);
+                    
+                    for (let j = 0; j < 8; j++) {
+                        if (crc & 0x8000) {
+                            crc = (crc << 1) ^ polynomial;
+                        } else {
+                            crc = crc << 1;
+                        }
+                    }
+                }
+                
+                return crc & 0xFFFF;
+            }
+
+            /**
+             * Verify checksum of data
+             * @param {Uint8Array} data - The data to verify
+             * @param {number} expectedChecksum - The expected checksum value
+             * @returns {boolean} True if checksum matches
+             */
+            verifyChecksum(data, expectedChecksum) {
+                const actualChecksum = this.calculateChecksum(data);
+                return actualChecksum === expectedChecksum;
+            }
+        }
+
+        // Input Handler class
+        class InputHandler {
+            constructor(dataProcessor) {
+                this.dataProcessor = dataProcessor;
+                this.currentInput = null; // Stores the most recent prepared data
+                this.lastInputType = null; // 'text' or 'file'
+                this.sendButton = document.getElementById('sendBtn');
+                this.textInput = document.getElementById('textInput');
+                this.fileInput = document.getElementById('fileInput');
+                this.statusElement = document.getElementById('emitterStatus');
+                
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                // Text input event listener
+                this.textInput.addEventListener('input', () => {
+                    this.handleTextInput();
+                });
+
+                // File input event listener
+                this.fileInput.addEventListener('change', () => {
+                    this.handleFileInput();
+                });
+            }
+
+            /**
+             * Handle text input changes
+             */
+            handleTextInput() {
+                const text = this.textInput.value.trim();
+                
+                if (text.length > 0) {
+                    // Prepare text data
+                    this.currentInput = this.dataProcessor.prepareText(text);
+                    this.lastInputType = 'text';
+                    
+                    // Clear file input to show text has priority
+                    this.fileInput.value = '';
+                    
+                    // Update send button state
+                    this.updateSendButtonState();
+                    
+                    // Clear any previous warnings
+                    this.hideStatus();
+                } else {
+                    // No valid text input
+                    this.currentInput = null;
+                    this.lastInputType = null;
+                    this.updateSendButtonState();
+                }
+            }
+
+            /**
+             * Handle file input changes
+             */
+            async handleFileInput() {
+                const file = this.fileInput.files[0];
+                
+                if (file) {
+                    // Check file size and warn if > 1MB
+                    const fileSizeMB = file.size / (1024 * 1024);
+                    
+                    if (fileSizeMB > 1) {
+                        // Calculate estimated transmission time
+                        // At 100 baud with 11 bits per byte = 9.09 bytes/second
+                        const estimatedSeconds = file.size / 9.09;
+                        const estimatedMinutes = Math.ceil(estimatedSeconds / 60);
+                        
+                        this.showWarning(
+                            `Warning: File size is ${fileSizeMB.toFixed(2)} MB. ` +
+                            `Estimated transmission time: ~${estimatedMinutes} minutes.`
+                        );
+                    } else {
+                        this.hideStatus();
+                    }
+                    
+                    try {
+                        // Prepare file data
+                        this.currentInput = await this.dataProcessor.prepareFile(file);
+                        this.lastInputType = 'file';
+                        
+                        // Clear text input to show file has priority
+                        this.textInput.value = '';
+                        
+                        // Update send button state
+                        this.updateSendButtonState();
+                    } catch (error) {
+                        this.showError('Failed to read file: ' + error.message);
+                        this.currentInput = null;
+                        this.lastInputType = null;
+                        this.updateSendButtonState();
+                    }
+                } else {
+                    // No file selected
+                    this.currentInput = null;
+                    this.lastInputType = null;
+                    this.updateSendButtonState();
+                    this.hideStatus();
+                }
+            }
+
+            /**
+             * Update send button enabled/disabled state based on data validity
+             */
+            updateSendButtonState() {
+                if (this.currentInput && this.currentInput.data && this.currentInput.data.length > 0) {
+                    this.sendButton.disabled = false;
+                } else {
+                    this.sendButton.disabled = true;
+                }
+            }
+
+            /**
+             * Get the current prepared input data
+             * @returns {Object|null} PreparedData object or null
+             */
+            getCurrentInput() {
+                return this.currentInput;
+            }
+
+            /**
+             * Clear all inputs
+             */
+            clearInputs() {
+                this.textInput.value = '';
+                this.fileInput.value = '';
+                this.currentInput = null;
+                this.lastInputType = null;
+                this.updateSendButtonState();
+                this.hideStatus();
+            }
+
+            /**
+             * Show warning message
+             * @param {string} message - Warning message to display
+             */
+            showWarning(message) {
+                this.statusElement.textContent = message;
+                this.statusElement.className = 'status-message warning active';
+            }
+
+            /**
+             * Show error message
+             * @param {string} message - Error message to display
+             */
+            showError(message) {
+                this.statusElement.textContent = message;
+                this.statusElement.className = 'status-message error active';
+            }
+
+            /**
+             * Hide status message
+             */
+            hideStatus() {
+                this.statusElement.className = 'status-message';
+                this.statusElement.textContent = '';
+            }
+        }
+
+        // AudioEncoder class
+        class AudioEncoder {
+            constructor() {
+                this.sampleRate = 48000; // Standard sample rate
+                this.freq0 = 4500; // Frequency for bit 0
+                this.freq1 = 6500; // Frequency for bit 1
+                this.freqPreamble = 5500; // Preamble frequency
+                this.baudRate = 100; // Bits per second
+                this.bitDuration = this.sampleRate / this.baudRate; // Samples per bit
+            }
+
+            /**
+             * Main encode function - assembles complete transmission
+             * @param {Object} preparedData - PreparedData object from DataProcessor
+             * @returns {AudioBuffer} Complete encoded audio transmission
+             */
+            encode(preparedData) {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Chunk the data
+                const dataProcessor = new DataProcessor();
+                const chunks = dataProcessor.chunkData(preparedData.data);
+                
+                // Generate all parts
+                const preamble = this.generatePreamble();
+                const header = this.encodeHeader(preparedData, chunks.length);
+                const encodedChunks = chunks.map(chunk => this.encodeChunk(chunk));
+                const postamble = this.generatePostamble();
+                
+                // Calculate total length
+                let totalLength = preamble.length + header.length + postamble.length;
+                for (const encodedChunk of encodedChunks) {
+                    totalLength += encodedChunk.length;
+                }
+                
+                // Create audio buffer
+                const audioBuffer = audioContext.createBuffer(1, totalLength, this.sampleRate);
+                const channelData = audioBuffer.getChannelData(0);
+                
+                // Assemble transmission
+                let offset = 0;
+                
+                // Add preamble
+                channelData.set(preamble, offset);
+                offset += preamble.length;
+                
+                // Add header
+                channelData.set(header, offset);
+                offset += header.length;
+                
+                // Add chunks
+                for (const encodedChunk of encodedChunks) {
+                    channelData.set(encodedChunk, offset);
+                    offset += encodedChunk.length;
+                }
+                
+                // Add postamble
+                channelData.set(postamble, offset);
+                
+                return audioBuffer;
+            }
+
+            /**
+             * Generate preamble - 500ms synchronization tone at 5500 Hz
+             * @returns {Float32Array} Preamble audio samples
+             */
+            generatePreamble() {
+                const duration = 0.5; // 500ms
+                const samples = Math.floor(this.sampleRate * duration);
+                const preamble = new Float32Array(samples);
+                
+                for (let i = 0; i < samples; i++) {
+                    const t = i / this.sampleRate;
+                    preamble[i] = Math.sin(2 * Math.PI * this.freqPreamble * t) * 0.5;
+                }
+                
+                return preamble;
+            }
+
+            /**
+             * Generate postamble - 200ms silence
+             * @returns {Float32Array} Postamble audio samples (silence)
+             */
+            generatePostamble() {
+                const duration = 0.2; // 200ms
+                const samples = Math.floor(this.sampleRate * duration);
+                return new Float32Array(samples); // All zeros = silence
+            }
+
+            /**
+             * Encode header with metadata
+             * @param {Object} preparedData - PreparedData object
+             * @param {number} totalChunks - Total number of chunks
+             * @returns {Float32Array} Encoded header audio samples
+             */
+            encodeHeader(preparedData, totalChunks) {
+                // Build header bytes
+                const headerBytes = [];
+                
+                // Magic bytes (2 bytes): 0xAA 0x55
+                headerBytes.push(0xAA, 0x55);
+                
+                // Data type (1 byte): 0x01=text, 0x02=file
+                headerBytes.push(preparedData.type === 'text' ? 0x01 : 0x02);
+                
+                // Filename handling
+                let filenameBytes = [];
+                if (preparedData.filename) {
+                    const encoder = new TextEncoder();
+                    filenameBytes = Array.from(encoder.encode(preparedData.filename));
+                }
+                
+                // Filename length (1 byte)
+                headerBytes.push(filenameBytes.length);
+                
+                // Filename (variable length, UTF-8)
+                headerBytes.push(...filenameBytes);
+                
+                // Total chunks (2 bytes, big-endian)
+                headerBytes.push((totalChunks >> 8) & 0xFF);
+                headerBytes.push(totalChunks & 0xFF);
+                
+                // Total data size (4 bytes, big-endian)
+                const dataSize = preparedData.data.length;
+                headerBytes.push((dataSize >> 24) & 0xFF);
+                headerBytes.push((dataSize >> 16) & 0xFF);
+                headerBytes.push((dataSize >> 8) & 0xFF);
+                headerBytes.push(dataSize & 0xFF);
+                
+                // Header checksum (2 bytes)
+                const dataProcessor = new DataProcessor();
+                const headerChecksum = dataProcessor.calculateChecksum(new Uint8Array(headerBytes));
+                headerBytes.push((headerChecksum >> 8) & 0xFF);
+                headerBytes.push(headerChecksum & 0xFF);
+                
+                // Encode header bytes to audio
+                return this.encodeBytes(new Uint8Array(headerBytes));
+            }
+
+            /**
+             * Encode a single chunk with start/stop bits and parity
+             * @param {Object} chunk - Chunk object with index, total, data, checksum
+             * @returns {Float32Array} Encoded chunk audio samples
+             */
+            encodeChunk(chunk) {
+                const chunkBytes = [];
+                
+                // Chunk index (2 bytes, big-endian)
+                chunkBytes.push((chunk.index >> 8) & 0xFF);
+                chunkBytes.push(chunk.index & 0xFF);
+                
+                // Data length (1 byte)
+                chunkBytes.push(chunk.data.length);
+                
+                // Data (variable length)
+                chunkBytes.push(...Array.from(chunk.data));
+                
+                // Chunk checksum (2 bytes)
+                chunkBytes.push((chunk.checksum >> 8) & 0xFF);
+                chunkBytes.push(chunk.checksum & 0xFF);
+                
+                // Encode chunk bytes to audio
+                return this.encodeBytes(new Uint8Array(chunkBytes));
+            }
+
+            /**
+             * Encode bytes to audio with start/stop bits and parity
+             * @param {Uint8Array} bytes - Bytes to encode
+             * @returns {Float32Array} Encoded audio samples
+             */
+            encodeBytes(bytes) {
+                const encodedBits = [];
+                
+                // Encode each byte with framing
+                for (let i = 0; i < bytes.length; i++) {
+                    const byte = bytes[i];
+                    
+                    // Start bit (0)
+                    encodedBits.push(0);
+                    
+                    // 8 data bits (LSB first)
+                    let onesCount = 0;
+                    for (let bit = 0; bit < 8; bit++) {
+                        const bitValue = (byte >> bit) & 1;
+                        encodedBits.push(bitValue);
+                        if (bitValue === 1) onesCount++;
+                    }
+                    
+                    // Parity bit (even parity)
+                    const parityBit = onesCount % 2;
+                    encodedBits.push(parityBit);
+                    
+                    // Stop bit (1)
+                    encodedBits.push(1);
+                }
+                
+                // Convert bits to FSK audio
+                return this.encodeBitsToFSK(encodedBits);
+            }
+
+            /**
+             * Encode bits to FSK audio signal
+             * @param {Array} bits - Array of bit values (0 or 1)
+             * @returns {Float32Array} FSK-encoded audio samples
+             */
+            encodeBitsToFSK(bits) {
+                const totalSamples = bits.length * this.bitDuration;
+                const audio = new Float32Array(totalSamples);
+                
+                for (let i = 0; i < bits.length; i++) {
+                    const bit = bits[i];
+                    const frequency = bit === 0 ? this.freq0 : this.freq1;
+                    const startSample = i * this.bitDuration;
+                    
+                    // Generate tone for this bit
+                    for (let j = 0; j < this.bitDuration; j++) {
+                        const sampleIndex = startSample + j;
+                        const t = sampleIndex / this.sampleRate;
+                        audio[sampleIndex] = Math.sin(2 * Math.PI * frequency * t) * 0.5;
+                    }
+                }
+                
+                return audio;
+            }
+        }
+
+        // Initialize the application
+        const modeController = new ModeController();
+        const dataProcessor = new DataProcessor();
+        const inputHandler = new InputHandler(dataProcessor);
+    </script>
+</body>
+</html>
