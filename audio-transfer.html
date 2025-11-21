@@ -289,17 +289,286 @@
             border: 1px solid #ffeaa7;
         }
 
-        @media (max-width: 600px) {
+        /* Audio visualizer styles */
+        .audio-visualizer {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            display: none;
+        }
+
+        .audio-visualizer.active {
+            display: block;
+        }
+
+        .visualizer-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .level-meter {
+            width: 100%;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .level-meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80 0%, #22c55e 50%, #f59e0b 75%, #ef4444 100%);
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+
+        .level-meter-peak {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dc2626;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .level-meter-peak.active {
+            opacity: 1;
+        }
+
+        /* Waveform canvas */
+        .waveform-canvas {
+            width: 100%;
+            height: 60px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            display: block;
+        }
+
+        /* Button loading state */
+        .send-btn.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .send-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Enhanced button states */
+        .mode-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .send-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        /* Pulse animation for listening indicator */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+            }
+        }
+
+        .listening-icon.active {
+            animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+        }
+
+        /* Smooth transitions */
+        .mode-content {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced status messages with icons */
+        .status-message::before {
+            margin-right: 8px;
+        }
+
+        .status-message.success::before {
+            content: '✓';
+            font-weight: bold;
+        }
+
+        .status-message.error::before {
+            content: '✕';
+            font-weight: bold;
+        }
+
+        .status-message.warning::before {
+            content: '⚠';
+            font-weight: bold;
+        }
+
+        /* Improved file input styling */
+        input[type="file"] {
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            border-color: #667eea;
+        }
+
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+            border-style: solid;
+        }
+
+        /* Data display enhancements */
+        .data-display::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .data-display::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .data-display::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .data-display::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
             .container {
-                padding: 25px;
+                padding: 30px 20px;
             }
 
             h1 {
                 font-size: 24px;
             }
 
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .mode-btn {
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            .send-btn {
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            .waveform-canvas {
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
             .mode-selection {
                 flex-direction: column;
+                gap: 10px;
+            }
+
+            .mode-btn {
+                padding: 12px;
+            }
+
+            textarea {
+                min-height: 100px;
+            }
+
+            .level-meter {
+                height: 30px;
+            }
+
+            .waveform-canvas {
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px 12px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Accessibility improvements */
+        .mode-btn:focus,
+        .send-btn:focus,
+        textarea:focus,
+        input[type="file"]:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            .mode-selection,
+            .send-btn,
+            .audio-visualizer {
+                display: none;
             }
         }
     </style>
@@ -337,6 +606,12 @@
                 Send Data
             </button>
 
+            <!-- Audio Output Visualizer -->
+            <div class="audio-visualizer" id="emitterVisualizer">
+                <div class="visualizer-label">Audio Output Level</div>
+                <canvas class="waveform-canvas" id="emitterWaveform" width="600" height="60"></canvas>
+            </div>
+
             <!-- Progress Display for Emitter -->
             <div class="progress-container" id="emitterProgress">
                 <div class="progress-label">
@@ -360,6 +635,15 @@
             <div class="listening-indicator">
                 <div class="listening-icon"></div>
                 <div class="listening-text">Listening for transmission...</div>
+            </div>
+
+            <!-- Audio Input Visualizer -->
+            <div class="audio-visualizer active" id="receiverVisualizer">
+                <div class="visualizer-label">Audio Input Level</div>
+                <div class="level-meter">
+                    <div class="level-meter-fill" id="receiverLevelFill"></div>
+                    <div class="level-meter-peak" id="receiverLevelPeak"></div>
+                </div>
             </div>
 
             <!-- Progress Display for Receiver -->
@@ -990,10 +1274,2386 @@
             }
         }
 
+        // AudioPlayer class
+        class AudioPlayer {
+            constructor() {
+                this.audioContext = null;
+                this.sourceNode = null;
+                this.isPlaying = false;
+                this.startTime = 0;
+                this.pauseTime = 0;
+                this.duration = 0;
+                this.progressCallbacks = [];
+                this.progressInterval = null;
+            }
+
+            /**
+             * Play an audio buffer through speakers
+             * @param {AudioBuffer} audioBuffer - The audio buffer to play
+             * @returns {Promise<void>} Promise that resolves when playback completes
+             */
+            async play(audioBuffer) {
+                // Stop any existing playback
+                this.stop();
+
+                // Create audio context if needed
+                if (!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                // Resume audio context if suspended (required by some browsers)
+                if (this.audioContext.state === 'suspended') {
+                    await this.audioContext.resume();
+                }
+
+                return new Promise((resolve, reject) => {
+                    try {
+                        // Create source node
+                        this.sourceNode = this.audioContext.createBufferSource();
+                        this.sourceNode.buffer = audioBuffer;
+                        this.sourceNode.connect(this.audioContext.destination);
+
+                        // Store duration
+                        this.duration = audioBuffer.duration;
+
+                        // Set up completion handler
+                        this.sourceNode.onended = () => {
+                            this.isPlaying = false;
+                            this.stopProgressTracking();
+                            // Notify 100% progress on completion
+                            this.notifyProgress(1.0);
+                            resolve();
+                        };
+
+                        // Start playback
+                        this.startTime = this.audioContext.currentTime;
+                        this.sourceNode.start(0);
+                        this.isPlaying = true;
+
+                        // Start progress tracking
+                        this.startProgressTracking();
+                        
+                        // Notify that playback has started (for visualization setup)
+                        // Small delay to ensure source node is fully initialized
+                        setTimeout(() => {
+                            if (this.onPlaybackStartCallback) {
+                                this.onPlaybackStartCallback();
+                            }
+                        }, 10);
+
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            }
+
+            /**
+             * Stop playback
+             */
+            stop() {
+                if (this.sourceNode && this.isPlaying) {
+                    try {
+                        this.sourceNode.stop();
+                    } catch (e) {
+                        // Ignore errors if already stopped
+                    }
+                    this.sourceNode.disconnect();
+                    this.sourceNode = null;
+                }
+
+                this.isPlaying = false;
+                this.stopProgressTracking();
+            }
+
+            /**
+             * Get current playback progress (0.0 to 1.0)
+             * @returns {number} Progress value between 0 and 1
+             */
+            getProgress() {
+                if (!this.isPlaying || !this.audioContext || this.duration === 0) {
+                    return 0;
+                }
+
+                const elapsed = this.audioContext.currentTime - this.startTime;
+                const progress = Math.min(elapsed / this.duration, 1.0);
+                return progress;
+            }
+
+            /**
+             * Register a callback for progress updates
+             * @param {Function} callback - Callback function that receives progress (0.0 to 1.0)
+             */
+            onProgressUpdate(callback) {
+                if (typeof callback === 'function') {
+                    this.progressCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Clear all progress callbacks
+             */
+            clearProgressCallbacks() {
+                this.progressCallbacks = [];
+            }
+
+            /**
+             * Register a callback for when playback starts
+             * @param {Function} callback - Callback function
+             */
+            onPlaybackStart(callback) {
+                if (typeof callback === 'function') {
+                    this.onPlaybackStartCallback = callback;
+                }
+            }
+
+            /**
+             * Start tracking progress and calling callbacks
+             * @private
+             */
+            startProgressTracking() {
+                // Update progress every 100ms
+                this.progressInterval = setInterval(() => {
+                    if (this.isPlaying) {
+                        const progress = this.getProgress();
+                        this.notifyProgress(progress);
+                    }
+                }, 100);
+            }
+
+            /**
+             * Stop tracking progress
+             * @private
+             */
+            stopProgressTracking() {
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                    this.progressInterval = null;
+                }
+            }
+
+            /**
+             * Notify all registered callbacks of progress update
+             * @param {number} progress - Current progress (0.0 to 1.0)
+             * @private
+             */
+            notifyProgress(progress) {
+                for (const callback of this.progressCallbacks) {
+                    try {
+                        callback(progress);
+                    } catch (e) {
+                        console.error('Error in progress callback:', e);
+                    }
+                }
+            }
+
+            /**
+             * Check if currently playing
+             * @returns {boolean} True if audio is playing
+             */
+            isCurrentlyPlaying() {
+                return this.isPlaying;
+            }
+
+            /**
+             * Get the duration of the current audio buffer
+             * @returns {number} Duration in seconds
+             */
+            getDuration() {
+                return this.duration;
+            }
+        }
+
+        // ProgressTracker class
+        class ProgressTracker {
+            constructor() {
+                this.total = 0;
+                this.current = 0;
+                this.updateCallbacks = [];
+            }
+
+            /**
+             * Set the total amount for progress tracking
+             * @param {number} total - Total bytes or units to track
+             */
+            setTotal(total) {
+                this.total = total;
+                this.current = 0;
+                this.notifyUpdate();
+            }
+
+            /**
+             * Update current progress
+             * @param {number} current - Current bytes or units completed
+             */
+            updateProgress(current) {
+                this.current = Math.min(current, this.total);
+                this.notifyUpdate();
+            }
+
+            /**
+             * Get current progress information
+             * @returns {Object} Progress information with current, total, percentage, and bytesTransferred
+             */
+            getProgress() {
+                const percentage = this.total > 0 ? (this.current / this.total) * 100 : 0;
+                
+                return {
+                    current: this.current,
+                    total: this.total,
+                    percentage: percentage,
+                    bytesTransferred: this.current
+                };
+            }
+
+            /**
+             * Register a callback for progress updates
+             * @param {Function} callback - Callback function that receives ProgressInfo object
+             */
+            onUpdate(callback) {
+                if (typeof callback === 'function') {
+                    this.updateCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Clear all update callbacks
+             */
+            clearCallbacks() {
+                this.updateCallbacks = [];
+            }
+
+            /**
+             * Reset progress to zero
+             */
+            reset() {
+                this.current = 0;
+                this.total = 0;
+                this.notifyUpdate();
+            }
+
+            /**
+             * Notify all registered callbacks of progress update
+             * @private
+             */
+            notifyUpdate() {
+                const progressInfo = this.getProgress();
+                
+                for (const callback of this.updateCallbacks) {
+                    try {
+                        callback(progressInfo);
+                    } catch (e) {
+                        console.error('Error in progress update callback:', e);
+                    }
+                }
+            }
+
+            /**
+             * Update UI elements for real-time display
+             * @param {string} mode - 'emitter' or 'receiver'
+             * @param {Object} progressInfo - Progress information object
+             */
+            updateUI(mode, progressInfo) {
+                const prefix = mode === 'emitter' ? 'emitter' : 'receiver';
+                
+                // Get UI elements
+                const progressContainer = document.getElementById(`${prefix}Progress`);
+                const percentageElement = document.getElementById(`${prefix}Percentage`);
+                const progressBar = document.getElementById(`${prefix}ProgressBar`);
+                const detailsElement = document.getElementById(`${prefix}Details`);
+                
+                if (!progressContainer || !percentageElement || !progressBar || !detailsElement) {
+                    return;
+                }
+                
+                // Show progress container
+                progressContainer.classList.add('active');
+                
+                // Update percentage display
+                percentageElement.textContent = `${Math.round(progressInfo.percentage)}%`;
+                
+                // Update progress bar width
+                progressBar.style.width = `${progressInfo.percentage}%`;
+                
+                // Update details text
+                detailsElement.textContent = `${progressInfo.current} / ${progressInfo.total} bytes`;
+            }
+
+            /**
+             * Hide UI progress display
+             * @param {string} mode - 'emitter' or 'receiver'
+             */
+            hideUI(mode) {
+                const prefix = mode === 'emitter' ? 'emitter' : 'receiver';
+                const progressContainer = document.getElementById(`${prefix}Progress`);
+                
+                if (progressContainer) {
+                    progressContainer.classList.remove('active');
+                }
+            }
+        }
+
+        // AudioVisualizer class - Visualizes audio output and input
+        class AudioVisualizer {
+            /**
+             * Create an audio visualizer
+             * @param {string} canvasId - ID of the canvas element for waveform
+             * @param {string} levelFillId - ID of the level meter fill element (optional)
+             * @param {string} levelPeakId - ID of the level meter peak indicator (optional)
+             */
+            constructor(canvasId, levelFillId = null, levelPeakId = null) {
+                this.canvas = document.getElementById(canvasId);
+                this.levelFill = levelFillId ? document.getElementById(levelFillId) : null;
+                this.levelPeak = levelPeakId ? document.getElementById(levelPeakId) : null;
+                
+                this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+                this.isActive = false;
+                this.animationId = null;
+                
+                // Audio analysis
+                this.audioContext = null;
+                this.analyser = null;
+                this.dataArray = null;
+                this.bufferLength = 0;
+                
+                // Peak detection
+                this.peakLevel = 0;
+                this.peakDecay = 0.95;
+                this.peakHoldTime = 1000; // ms
+                this.lastPeakTime = 0;
+                
+                // Initialize canvas if available
+                if (this.canvas && this.ctx) {
+                    this.initializeCanvas();
+                }
+            }
+
+            /**
+             * Initialize canvas with proper dimensions
+             */
+            initializeCanvas() {
+                // Set canvas size to match display size
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * window.devicePixelRatio;
+                this.canvas.height = rect.height * window.devicePixelRatio;
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            }
+
+            /**
+             * Start visualizing audio from an audio node
+             * @param {AudioNode} audioNode - The audio node to visualize
+             * @param {AudioContext} audioContext - The audio context
+             */
+            startVisualization(audioNode, audioContext) {
+                if (!audioNode || !audioContext) {
+                    return;
+                }
+
+                this.audioContext = audioContext;
+                
+                // Create analyser node if not exists
+                if (!this.analyser) {
+                    this.analyser = audioContext.createAnalyser();
+                    this.analyser.fftSize = 2048;
+                    this.bufferLength = this.analyser.frequencyBinCount;
+                    this.dataArray = new Uint8Array(this.bufferLength);
+                }
+
+                // Connect audio node to analyser
+                try {
+                    audioNode.connect(this.analyser);
+                } catch (e) {
+                    // Node might already be connected
+                }
+
+                this.isActive = true;
+                this.animate();
+            }
+
+            /**
+             * Start visualizing from audio data stream (for input monitoring)
+             * @param {Function} getAudioLevel - Function that returns current audio level (0-1)
+             */
+            startLevelMonitoring(getAudioLevel) {
+                this.getAudioLevel = getAudioLevel;
+                this.isActive = true;
+                this.animateLevelMeter();
+            }
+
+            /**
+             * Stop visualization
+             */
+            stopVisualization() {
+                this.isActive = false;
+                
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+
+                // Clear canvas
+                if (this.ctx && this.canvas) {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.ctx.clearRect(0, 0, rect.width, rect.height);
+                }
+
+                // Reset level meter
+                if (this.levelFill) {
+                    this.levelFill.style.width = '0%';
+                }
+                if (this.levelPeak) {
+                    this.levelPeak.classList.remove('active');
+                }
+            }
+
+            /**
+             * Animation loop for waveform visualization
+             */
+            animate() {
+                if (!this.isActive || !this.analyser || !this.ctx || !this.canvas) {
+                    return;
+                }
+
+                this.animationId = requestAnimationFrame(() => this.animate());
+
+                // Get waveform data
+                this.analyser.getByteTimeDomainData(this.dataArray);
+
+                // Get canvas dimensions
+                const rect = this.canvas.getBoundingClientRect();
+                const width = rect.width;
+                const height = rect.height;
+
+                // Clear canvas
+                this.ctx.fillStyle = '#1a1a1a';
+                this.ctx.fillRect(0, 0, width, height);
+
+                // Draw waveform
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeStyle = '#667eea';
+                this.ctx.beginPath();
+
+                const sliceWidth = width / this.bufferLength;
+                let x = 0;
+
+                for (let i = 0; i < this.bufferLength; i++) {
+                    const v = this.dataArray[i] / 128.0;
+                    const y = (v * height) / 2;
+
+                    if (i === 0) {
+                        this.ctx.moveTo(x, y);
+                    } else {
+                        this.ctx.lineTo(x, y);
+                    }
+
+                    x += sliceWidth;
+                }
+
+                this.ctx.lineTo(width, height / 2);
+                this.ctx.stroke();
+
+                // Calculate and display level
+                this.updateLevelFromWaveform();
+            }
+
+            /**
+             * Animation loop for level meter only
+             */
+            animateLevelMeter() {
+                if (!this.isActive) {
+                    return;
+                }
+
+                this.animationId = requestAnimationFrame(() => this.animateLevelMeter());
+
+                // Get audio level from callback
+                const level = this.getAudioLevel ? this.getAudioLevel() : 0;
+                
+                // Update level meter
+                this.updateLevelMeter(level);
+            }
+
+            /**
+             * Update level meter from waveform data
+             */
+            updateLevelFromWaveform() {
+                if (!this.dataArray) {
+                    return;
+                }
+
+                // Calculate RMS level
+                let sum = 0;
+                for (let i = 0; i < this.bufferLength; i++) {
+                    const normalized = (this.dataArray[i] - 128) / 128;
+                    sum += normalized * normalized;
+                }
+                const rms = Math.sqrt(sum / this.bufferLength);
+                const level = Math.min(rms * 2, 1.0); // Scale and clamp
+
+                this.updateLevelMeter(level);
+            }
+
+            /**
+             * Update level meter display
+             * @param {number} level - Audio level (0-1)
+             */
+            updateLevelMeter(level) {
+                if (!this.levelFill) {
+                    return;
+                }
+
+                // Update fill width
+                const percentage = level * 100;
+                this.levelFill.style.width = `${percentage}%`;
+
+                // Update peak indicator
+                const now = Date.now();
+                
+                if (level > this.peakLevel) {
+                    this.peakLevel = level;
+                    this.lastPeakTime = now;
+                    
+                    if (this.levelPeak) {
+                        this.levelPeak.classList.add('active');
+                    }
+                } else {
+                    // Decay peak
+                    if (now - this.lastPeakTime > this.peakHoldTime) {
+                        this.peakLevel *= this.peakDecay;
+                        
+                        if (this.peakLevel < 0.01) {
+                            this.peakLevel = 0;
+                            if (this.levelPeak) {
+                                this.levelPeak.classList.remove('active');
+                            }
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Show visualizer container
+             */
+            show() {
+                const visualizer = this.canvas ? this.canvas.closest('.audio-visualizer') : null;
+                if (visualizer) {
+                    visualizer.classList.add('active');
+                }
+            }
+
+            /**
+             * Hide visualizer container
+             */
+            hide() {
+                const visualizer = this.canvas ? this.canvas.closest('.audio-visualizer') : null;
+                if (visualizer) {
+                    visualizer.classList.remove('active');
+                }
+            }
+        }
+
+        // EmitterController class - Wires up emitter mode functionality
+        class EmitterController {
+            constructor(modeController, dataProcessor, inputHandler) {
+                this.modeController = modeController;
+                this.dataProcessor = dataProcessor;
+                this.inputHandler = inputHandler;
+                this.audioEncoder = new AudioEncoder();
+                this.audioPlayer = new AudioPlayer();
+                this.progressTracker = new ProgressTracker();
+                this.audioVisualizer = new AudioVisualizer('emitterWaveform');
+                this.isTransmitting = false;
+                
+                this.sendButton = document.getElementById('sendBtn');
+                this.statusElement = document.getElementById('emitterStatus');
+                
+                // Check Web Audio API availability on initialization
+                this.checkWebAudioSupport();
+                
+                this.initializeEventListeners();
+            }
+
+            /**
+             * Check if Web Audio API is available
+             */
+            checkWebAudioSupport() {
+                if (!window.AudioContext && !window.webkitAudioContext) {
+                    this.showError('Web Audio API is not supported in this browser. Please use a modern browser like Chrome, Firefox, Safari, or Edge.');
+                    this.sendButton.disabled = true;
+                }
+            }
+
+            /**
+             * Initialize event listeners for emitter mode
+             */
+            initializeEventListeners() {
+                // Connect send button to encoding pipeline
+                this.sendButton.addEventListener('click', () => {
+                    this.handleSendClick();
+                });
+            }
+
+            /**
+             * Handle send button click - main transmission workflow
+             */
+            async handleSendClick() {
+                // Prevent multiple simultaneous transmissions
+                if (this.isTransmitting) {
+                    return;
+                }
+
+                // Get current input data
+                const preparedData = this.inputHandler.getCurrentInput();
+                
+                if (!preparedData || !preparedData.data || preparedData.data.length === 0) {
+                    this.showError('No data to send. Please enter text or select a file.');
+                    return;
+                }
+
+                try {
+                    // Start transmission
+                    this.startTransmission();
+
+                    // Encode data to audio
+                    const audioBuffer = this.audioEncoder.encode(preparedData);
+
+                    // Set up progress tracking
+                    this.setupProgressTracking(preparedData.data.length);
+                    
+                    // Set up visualization callback
+                    this.audioPlayer.onPlaybackStart(() => {
+                        if (this.audioPlayer.audioContext && this.audioPlayer.sourceNode) {
+                            this.audioVisualizer.startVisualization(
+                                this.audioPlayer.sourceNode,
+                                this.audioPlayer.audioContext
+                            );
+                        }
+                    });
+
+                    // Play the encoded audio
+                    await this.audioPlayer.play(audioBuffer);
+
+                    // Transmission complete
+                    this.completeTransmission();
+
+                } catch (error) {
+                    this.handleTransmissionError(error);
+                }
+            }
+
+            /**
+             * Start transmission - lock UI and update state
+             */
+            startTransmission() {
+                this.isTransmitting = true;
+                
+                // Lock mode switching
+                this.modeController.lockMode();
+                
+                // Disable send button and add loading state
+                this.sendButton.disabled = true;
+                this.sendButton.classList.add('loading');
+                
+                // Clear any previous status messages
+                this.hideStatus();
+                
+                // Show progress container
+                this.progressTracker.hideUI('emitter');
+                
+                // Show audio visualizer
+                this.audioVisualizer.show();
+            }
+
+            /**
+             * Set up progress tracking for transmission
+             * @param {number} totalBytes - Total bytes being transmitted
+             */
+            setupProgressTracking(totalBytes) {
+                // Set total bytes for progress tracker
+                this.progressTracker.setTotal(totalBytes);
+                
+                // Clear any previous callbacks
+                this.audioPlayer.clearProgressCallbacks();
+                this.progressTracker.clearCallbacks();
+                
+                // Register progress callback from audio player
+                this.audioPlayer.onProgressUpdate((audioProgress) => {
+                    // Convert audio progress (0-1) to bytes transmitted
+                    const bytesTransmitted = Math.floor(audioProgress * totalBytes);
+                    this.progressTracker.updateProgress(bytesTransmitted);
+                });
+                
+                // Register progress tracker callback to update UI
+                this.progressTracker.onUpdate((progressInfo) => {
+                    this.progressTracker.updateUI('emitter', progressInfo);
+                });
+            }
+
+            /**
+             * Complete transmission - unlock UI and show success
+             */
+            completeTransmission() {
+                this.isTransmitting = false;
+                
+                // Unlock mode switching
+                this.modeController.unlockMode();
+                
+                // Re-enable send button and remove loading state
+                this.sendButton.classList.remove('loading');
+                this.inputHandler.updateSendButtonState();
+                
+                // Stop audio visualization
+                this.audioVisualizer.stopVisualization();
+                
+                // Show success notification
+                this.showSuccess('Transmission completed successfully!');
+                
+                // Keep progress display visible to show 100%
+                // User can see final state before starting new transmission
+            }
+
+            /**
+             * Handle transmission error
+             * @param {Error} error - The error that occurred
+             */
+            handleTransmissionError(error) {
+                this.isTransmitting = false;
+                
+                // Unlock mode switching
+                this.modeController.unlockMode();
+                
+                // Re-enable send button and remove loading state
+                this.sendButton.classList.remove('loading');
+                this.inputHandler.updateSendButtonState();
+                
+                // Stop audio playback if still playing
+                this.audioPlayer.stop();
+                
+                // Stop audio visualization
+                this.audioVisualizer.stopVisualization();
+                this.audioVisualizer.hide();
+                
+                // Hide progress display
+                this.progressTracker.hideUI('emitter');
+                
+                // Show error message with clear instructions
+                let errorMessage = 'Transmission failed: ';
+                let instructions = '';
+                
+                if (error.name === 'NotAllowedError') {
+                    errorMessage += 'Audio playback was blocked by the browser.';
+                    instructions = 'Please check your browser settings and allow audio playback for this page, then try again.';
+                } else if (error.name === 'NotSupportedError') {
+                    errorMessage += 'Web Audio API is not supported in this browser.';
+                    instructions = 'Please use a modern browser like Chrome, Firefox, Safari, or Edge.';
+                } else if (error.message && error.message.includes('Web Audio API')) {
+                    errorMessage += 'Web Audio API is not available.';
+                    instructions = 'Please ensure you are using a compatible browser and try again.';
+                } else {
+                    errorMessage += error.message || 'An unknown error occurred.';
+                    instructions = 'Please try again. If the problem persists, try refreshing the page.';
+                }
+                
+                this.showError(errorMessage + ' ' + instructions);
+            }
+
+            /**
+             * Show success message
+             * @param {string} message - Success message to display
+             */
+            showSuccess(message) {
+                this.statusElement.textContent = message;
+                this.statusElement.className = 'status-message success active';
+            }
+
+            /**
+             * Show error message
+             * @param {string} message - Error message to display
+             */
+            showError(message) {
+                this.statusElement.textContent = message;
+                this.statusElement.className = 'status-message error active';
+            }
+
+            /**
+             * Hide status message
+             */
+            hideStatus() {
+                this.statusElement.className = 'status-message';
+                this.statusElement.textContent = '';
+            }
+
+            /**
+             * Check if currently transmitting
+             * @returns {boolean} True if transmission is in progress
+             */
+            isCurrentlyTransmitting() {
+                return this.isTransmitting;
+            }
+        }
+
+        // GoertzelFilter class - Implements Goertzel algorithm for frequency detection
+        class GoertzelFilter {
+            /**
+             * Create a Goertzel filter for a specific target frequency
+             * @param {number} targetFrequency - The frequency to detect (Hz)
+             * @param {number} sampleRate - Sample rate of the audio (Hz)
+             * @param {number} windowSize - Number of samples in the analysis window
+             */
+            constructor(targetFrequency, sampleRate, windowSize) {
+                this.targetFrequency = targetFrequency;
+                this.sampleRate = sampleRate;
+                this.windowSize = windowSize;
+                
+                // Calculate Goertzel coefficient
+                // k = (int)(0.5 + ((windowSize * targetFrequency) / sampleRate))
+                const k = Math.round((windowSize * targetFrequency) / sampleRate);
+                
+                // omega = (2 * PI * k) / windowSize
+                const omega = (2 * Math.PI * k) / windowSize;
+                
+                // coefficient = 2 * cos(omega)
+                this.coefficient = 2 * Math.cos(omega);
+                
+                // For magnitude calculation
+                this.cosine = Math.cos(omega);
+                this.sine = Math.sin(omega);
+            }
+
+            /**
+             * Process audio samples and return magnitude at target frequency
+             * @param {Float32Array} samples - Audio samples to analyze
+             * @returns {number} Magnitude of the target frequency component
+             */
+            process(samples) {
+                let s0 = 0;
+                let s1 = 0;
+                let s2 = 0;
+                
+                // Process each sample through the Goertzel filter
+                for (let i = 0; i < samples.length; i++) {
+                    s0 = samples[i] + this.coefficient * s1 - s2;
+                    s2 = s1;
+                    s1 = s0;
+                }
+                
+                // Calculate magnitude
+                // magnitude = sqrt(s1^2 + s2^2 - coefficient * s1 * s2)
+                const real = s1 - s2 * this.cosine;
+                const imag = s2 * this.sine;
+                const magnitude = Math.sqrt(real * real + imag * imag);
+                
+                return magnitude;
+            }
+
+            /**
+             * Process audio samples and return normalized magnitude (0.0 to 1.0)
+             * @param {Float32Array} samples - Audio samples to analyze
+             * @returns {number} Normalized magnitude (0.0 to 1.0)
+             */
+            processNormalized(samples) {
+                const magnitude = this.process(samples);
+                
+                // Normalize by window size for consistent results
+                // This gives us a value roughly proportional to signal amplitude
+                return magnitude / this.windowSize;
+            }
+        }
+
+        // FrequencyDetector class - Uses Goertzel filters for FSK decoding
+        class FrequencyDetector {
+            /**
+             * Create a frequency detector for FSK decoding
+             * @param {number} sampleRate - Sample rate of the audio (default: 48000 Hz)
+             */
+            constructor(sampleRate = 48000) {
+                this.sampleRate = sampleRate;
+                this.baudRate = 100; // Bits per second
+                this.bitDuration = sampleRate / this.baudRate; // Samples per bit
+                
+                // Frequencies to detect
+                this.freq0 = 4500; // Bit 0 frequency
+                this.freq1 = 6500; // Bit 1 frequency
+                this.freqPreamble = 5500; // Preamble frequency
+                
+                // Window size for Goertzel analysis
+                // Use the bit duration as window size for optimal detection
+                this.windowSize = Math.floor(this.bitDuration);
+                
+                // Create Goertzel filters for each frequency
+                this.filter0 = new GoertzelFilter(this.freq0, this.sampleRate, this.windowSize);
+                this.filter1 = new GoertzelFilter(this.freq1, this.sampleRate, this.windowSize);
+                this.filterPreamble = new GoertzelFilter(this.freqPreamble, this.sampleRate, this.windowSize);
+                
+                // Threshold for bit decision (relative magnitude difference)
+                // If mag1 / mag0 > threshold, it's a 1 bit
+                // If mag0 / mag1 > threshold, it's a 0 bit
+                this.bitDecisionThreshold = 1.5;
+                
+                // Threshold for preamble detection (absolute magnitude)
+                // Preamble should have strong signal at 5500 Hz
+                this.preambleThreshold = 0.1;
+            }
+
+            /**
+             * Detect which bit (0 or 1) is present in the audio samples
+             * @param {Float32Array} samples - Audio samples to analyze (should be ~1 bit duration)
+             * @returns {number|null} Detected bit (0 or 1) or null if no clear signal
+             */
+            detectBit(samples) {
+                // Ensure we have enough samples
+                if (samples.length < this.windowSize) {
+                    return null;
+                }
+                
+                // Extract window of samples (use first windowSize samples)
+                const window = samples.slice(0, this.windowSize);
+                
+                // Get magnitudes at both frequencies
+                const mag0 = this.filter0.processNormalized(window);
+                const mag1 = this.filter1.processNormalized(window);
+                
+                // Threshold-based bit decision
+                // Compare relative magnitudes to determine which frequency is stronger
+                if (mag1 > mag0 * this.bitDecisionThreshold) {
+                    // Frequency 1 (6500 Hz) is dominant -> bit 1
+                    return 1;
+                } else if (mag0 > mag1 * this.bitDecisionThreshold) {
+                    // Frequency 0 (4500 Hz) is dominant -> bit 0
+                    return 0;
+                } else {
+                    // No clear signal or ambiguous
+                    return null;
+                }
+            }
+
+            /**
+             * Detect if preamble (5500 Hz tone) is present in the audio samples
+             * @param {Float32Array} samples - Audio samples to analyze
+             * @returns {boolean} True if preamble is detected
+             */
+            detectPreamble(samples) {
+                // Ensure we have enough samples
+                if (samples.length < this.windowSize) {
+                    return false;
+                }
+                
+                // Extract window of samples
+                const window = samples.slice(0, this.windowSize);
+                
+                // Get magnitude at preamble frequency
+                const magPreamble = this.filterPreamble.processNormalized(window);
+                
+                // Also check that other frequencies are not dominant
+                // (to avoid false positives from data transmission)
+                const mag0 = this.filter0.processNormalized(window);
+                const mag1 = this.filter1.processNormalized(window);
+                
+                // Preamble should have strong 5500 Hz signal
+                // and weaker signals at data frequencies
+                const isPreambleStrong = magPreamble > this.preambleThreshold;
+                const areDataFreqsWeak = magPreamble > mag0 * 1.2 && magPreamble > mag1 * 1.2;
+                
+                return isPreambleStrong && areDataFreqsWeak;
+            }
+
+            /**
+             * Analyze a continuous stream of audio and detect bits
+             * @param {Float32Array} samples - Audio samples to analyze
+             * @returns {Array<number>} Array of detected bits (0 or 1)
+             */
+            detectBitStream(samples) {
+                const bits = [];
+                const stride = this.windowSize; // Move by one bit duration each time
+                
+                // Process samples in windows
+                for (let i = 0; i + this.windowSize <= samples.length; i += stride) {
+                    const window = samples.slice(i, i + this.windowSize);
+                    const bit = this.detectBit(window);
+                    
+                    if (bit !== null) {
+                        bits.push(bit);
+                    }
+                }
+                
+                return bits;
+            }
+
+            /**
+             * Get the window size (samples per bit)
+             * @returns {number} Number of samples in one bit duration
+             */
+            getWindowSize() {
+                return this.windowSize;
+            }
+
+            /**
+             * Set the bit decision threshold
+             * @param {number} threshold - New threshold value (default: 1.5)
+             */
+            setBitDecisionThreshold(threshold) {
+                this.bitDecisionThreshold = threshold;
+            }
+
+            /**
+             * Set the preamble detection threshold
+             * @param {number} threshold - New threshold value (default: 0.1)
+             */
+            setPreambleThreshold(threshold) {
+                this.preambleThreshold = threshold;
+            }
+
+            /**
+             * Get magnitude information for debugging
+             * @param {Float32Array} samples - Audio samples to analyze
+             * @returns {Object} Magnitudes at all three frequencies
+             */
+            getMagnitudes(samples) {
+                if (samples.length < this.windowSize) {
+                    return { mag0: 0, mag1: 0, magPreamble: 0 };
+                }
+                
+                const window = samples.slice(0, this.windowSize);
+                
+                return {
+                    mag0: this.filter0.processNormalized(window),
+                    mag1: this.filter1.processNormalized(window),
+                    magPreamble: this.filterPreamble.processNormalized(window)
+                };
+            }
+        }
+
+        // AudioDecoder class - Decodes FSK audio signals back to binary data
+        class AudioDecoder {
+            /**
+             * Create an audio decoder for FSK demodulation
+             * @param {number} sampleRate - Sample rate of the audio (default: 48000 Hz)
+             */
+            constructor(sampleRate = 48000) {
+                this.sampleRate = sampleRate;
+                this.baudRate = 100; // Bits per second
+                this.bitDuration = sampleRate / this.baudRate; // Samples per bit
+                
+                // Create frequency detector
+                this.frequencyDetector = new FrequencyDetector(sampleRate);
+                
+                // State machine for decoding
+                this.state = 'IDLE'; // States: IDLE, PREAMBLE_DETECTED, DECODING_HEADER, DECODING_CHUNKS
+                
+                // Buffers
+                this.audioBuffer = new Float32Array(0); // Accumulated audio samples
+                this.receivedChunks = []; // Array of decoded chunks
+                
+                // Header information
+                this.header = null;
+                this.expectedChunks = 0;
+                
+                // Callbacks
+                this.chunkReceivedCallbacks = [];
+                this.transmissionCompleteCallbacks = [];
+                this.errorCallbacks = [];
+                
+                // Preamble detection
+                this.preambleDetectionWindow = Math.floor(0.5 * sampleRate); // 500ms window
+                this.preambleConfirmationCount = 0;
+                this.preambleConfirmationThreshold = 10; // Need multiple confirmations
+                
+                // Preamble timeout tracking (30 seconds)
+                this.preambleTimeout = 30000; // 30 seconds in milliseconds
+                this.listeningStartTime = null;
+                this.preambleTimeoutTimer = null;
+                
+                // Checksum error tracking
+                this.checksumErrors = 0;
+                this.maxChecksumErrors = 10; // Maximum consecutive checksum errors before giving up
+                
+                // Data processor for checksum verification
+                this.dataProcessor = new DataProcessor();
+            }
+
+            /**
+             * Start listening for transmissions
+             */
+            startListening() {
+                this.reset();
+                this.state = 'IDLE';
+                this.listeningStartTime = Date.now();
+                this.startPreambleTimeoutTimer();
+            }
+
+            /**
+             * Stop listening for transmissions
+             */
+            stopListening() {
+                this.reset();
+                this.clearPreambleTimeoutTimer();
+            }
+
+            /**
+             * Reset decoder state
+             */
+            reset() {
+                this.state = 'IDLE';
+                this.audioBuffer = new Float32Array(0);
+                this.receivedChunks = [];
+                this.header = null;
+                this.expectedChunks = 0;
+                this.preambleConfirmationCount = 0;
+                this.checksumErrors = 0;
+            }
+
+            /**
+             * Start preamble timeout timer
+             */
+            startPreambleTimeoutTimer() {
+                this.clearPreambleTimeoutTimer();
+                this.preambleTimeoutTimer = setTimeout(() => {
+                    if (this.state === 'IDLE') {
+                        this.notifyError({
+                            type: 'PREAMBLE_TIMEOUT',
+                            message: 'No transmission detected within 30 seconds. Please ensure the emitter is playing audio and the volume is adequate.'
+                        });
+                    }
+                }, this.preambleTimeout);
+            }
+
+            /**
+             * Clear preamble timeout timer
+             */
+            clearPreambleTimeoutTimer() {
+                if (this.preambleTimeoutTimer) {
+                    clearTimeout(this.preambleTimeoutTimer);
+                    this.preambleTimeoutTimer = null;
+                }
+            }
+
+            /**
+             * Process incoming audio data
+             * @param {Float32Array} audioData - New audio samples to process
+             */
+            processAudioData(audioData) {
+                // Append new audio data to buffer
+                this.appendToBuffer(audioData);
+                
+                // Process based on current state
+                switch (this.state) {
+                    case 'IDLE':
+                        this.detectPreambleState();
+                        break;
+                    
+                    case 'PREAMBLE_DETECTED':
+                        this.waitForPreambleEnd();
+                        break;
+                    
+                    case 'DECODING_HEADER':
+                        this.decodeHeaderState();
+                        break;
+                    
+                    case 'DECODING_CHUNKS':
+                        this.decodeChunksState();
+                        break;
+                }
+            }
+
+            /**
+             * Detect preamble in audio buffer
+             * @param {Float32Array} audioData - Audio samples to check
+             * @returns {boolean} True if preamble is detected
+             */
+            detectPreamble(audioData) {
+                const windowSize = this.frequencyDetector.getWindowSize();
+                
+                // Need at least one window of samples
+                if (audioData.length < windowSize) {
+                    return false;
+                }
+                
+                // Check multiple windows for preamble
+                let detectionCount = 0;
+                const numWindows = Math.min(10, Math.floor(audioData.length / windowSize));
+                
+                for (let i = 0; i < numWindows; i++) {
+                    const start = i * windowSize;
+                    const window = audioData.slice(start, start + windowSize);
+                    
+                    if (this.frequencyDetector.detectPreamble(window)) {
+                        detectionCount++;
+                    }
+                }
+                
+                // Require multiple confirmations to avoid false positives
+                return detectionCount >= Math.min(5, numWindows);
+            }
+
+            /**
+             * State: Detect preamble
+             */
+            detectPreambleState() {
+                const windowSize = this.frequencyDetector.getWindowSize();
+                
+                // Keep buffer size manageable while searching for preamble
+                if (this.audioBuffer.length > this.preambleDetectionWindow * 2) {
+                    // Discard old samples, keep recent ones
+                    this.audioBuffer = this.audioBuffer.slice(-this.preambleDetectionWindow);
+                }
+                
+                // Check if we have enough samples to detect preamble
+                if (this.audioBuffer.length < windowSize * 10) {
+                    return;
+                }
+                
+                // Try to detect preamble
+                if (this.detectPreamble(this.audioBuffer)) {
+                    this.state = 'PREAMBLE_DETECTED';
+                    // Clear preamble timeout since we detected it
+                    this.clearPreambleTimeoutTimer();
+                    // Clear buffer to start fresh after preamble
+                    this.audioBuffer = new Float32Array(0);
+                }
+            }
+
+            /**
+             * State: Wait for preamble to end
+             */
+            waitForPreambleEnd() {
+                const windowSize = this.frequencyDetector.getWindowSize();
+                
+                // Wait for enough samples to confirm preamble has ended
+                if (this.audioBuffer.length < windowSize * 5) {
+                    return;
+                }
+                
+                // Check if preamble is still present
+                const stillPreamble = this.detectPreamble(this.audioBuffer.slice(-windowSize * 5));
+                
+                if (!stillPreamble) {
+                    // Preamble has ended, start decoding header
+                    this.state = 'DECODING_HEADER';
+                    // Keep buffer for header decoding
+                }
+            }
+
+            /**
+             * State: Decode header
+             */
+            decodeHeaderState() {
+                // Try to decode header
+                const header = this.decodeHeader(this.audioBuffer);
+                
+                if (header) {
+                    this.header = header;
+                    this.expectedChunks = header.totalChunks;
+                    this.receivedChunks = [];
+                    this.state = 'DECODING_CHUNKS';
+                    
+                    // Remove decoded header samples from buffer
+                    const headerBitCount = this.estimateHeaderBitCount(header);
+                    const headerSampleCount = headerBitCount * this.bitDuration;
+                    this.audioBuffer = this.audioBuffer.slice(Math.floor(headerSampleCount));
+                }
+            }
+
+            /**
+             * State: Decode chunks
+             */
+            decodeChunksState() {
+                // Try to decode a chunk
+                const chunk = this.decodeChunk(this.audioBuffer);
+                
+                if (chunk) {
+                    // Verify chunk checksum
+                    const chunkData = new Uint8Array([
+                        (chunk.index >> 8) & 0xFF,
+                        chunk.index & 0xFF,
+                        chunk.data.length,
+                        ...chunk.data
+                    ]);
+                    
+                    if (this.dataProcessor.verifyChecksum(chunkData, chunk.checksum)) {
+                        // Valid chunk received - reset error counter
+                        this.checksumErrors = 0;
+                        this.receivedChunks.push(chunk);
+                        this.notifyChunkReceived(chunk);
+                        
+                        // Check if transmission is complete
+                        if (this.receivedChunks.length >= this.expectedChunks) {
+                            this.notifyTransmissionComplete();
+                            this.reset();
+                        } else {
+                            // Remove decoded chunk samples from buffer
+                            const chunkBitCount = this.estimateChunkBitCount(chunk);
+                            const chunkSampleCount = chunkBitCount * this.bitDuration;
+                            this.audioBuffer = this.audioBuffer.slice(Math.floor(chunkSampleCount));
+                        }
+                    } else {
+                        // Checksum mismatch - increment error counter
+                        this.checksumErrors++;
+                        
+                        if (this.checksumErrors >= this.maxChecksumErrors) {
+                            // Too many consecutive checksum errors
+                            this.notifyError({
+                                type: 'CHECKSUM_MISMATCH',
+                                message: 'Multiple checksum errors detected. The audio signal may be corrupted or too weak. Please move devices closer together and ensure minimal background noise.',
+                                receivedChunks: this.receivedChunks.length,
+                                expectedChunks: this.expectedChunks
+                            });
+                            this.reset();
+                        } else {
+                            // Skip some samples and try again
+                            const skipSamples = Math.floor(this.bitDuration * 11); // Skip one byte worth
+                            this.audioBuffer = this.audioBuffer.slice(skipSamples);
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Decode header from audio buffer
+             * @param {Float32Array} audioData - Audio samples containing header
+             * @returns {Object|null} Decoded header or null if not enough data
+             */
+            decodeHeader(audioData) {
+                // Estimate minimum header size: magic(2) + type(1) + filenameLen(1) + chunks(2) + size(4) + checksum(2) = 12 bytes minimum
+                // Each byte = 11 bits (start + 8 data + parity + stop)
+                const minHeaderBits = 12 * 11;
+                const minHeaderSamples = minHeaderBits * this.bitDuration;
+                
+                if (audioData.length < minHeaderSamples) {
+                    return null;
+                }
+                
+                // Decode bits from audio
+                const bits = this.frequencyDetector.detectBitStream(audioData);
+                
+                if (bits.length < minHeaderBits) {
+                    return null;
+                }
+                
+                // Decode bytes from bits
+                const bytes = this.decodeBytesFromBits(bits);
+                
+                if (bytes.length < 12) {
+                    return null;
+                }
+                
+                // Parse header
+                let offset = 0;
+                
+                // Magic bytes (2 bytes): 0xAA 0x55
+                const magic1 = bytes[offset++];
+                const magic2 = bytes[offset++];
+                
+                if (magic1 !== 0xAA || magic2 !== 0x55) {
+                    return null; // Invalid magic bytes
+                }
+                
+                // Data type (1 byte): 0x01=text, 0x02=file
+                const dataType = bytes[offset++];
+                const type = dataType === 0x01 ? 'text' : 'file';
+                
+                // Filename length (1 byte)
+                const filenameLength = bytes[offset++];
+                
+                // Filename (variable length, UTF-8)
+                let filename = null;
+                if (filenameLength > 0) {
+                    if (bytes.length < offset + filenameLength) {
+                        return null; // Not enough data
+                    }
+                    const filenameBytes = bytes.slice(offset, offset + filenameLength);
+                    const decoder = new TextDecoder();
+                    filename = decoder.decode(new Uint8Array(filenameBytes));
+                    offset += filenameLength;
+                }
+                
+                // Total chunks (2 bytes, big-endian)
+                if (bytes.length < offset + 2) {
+                    return null;
+                }
+                const totalChunks = (bytes[offset] << 8) | bytes[offset + 1];
+                offset += 2;
+                
+                // Total data size (4 bytes, big-endian)
+                if (bytes.length < offset + 4) {
+                    return null;
+                }
+                const totalSize = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | 
+                                 (bytes[offset + 2] << 8) | bytes[offset + 3];
+                offset += 4;
+                
+                // Header checksum (2 bytes)
+                if (bytes.length < offset + 2) {
+                    return null;
+                }
+                const headerChecksum = (bytes[offset] << 8) | bytes[offset + 1];
+                offset += 2;
+                
+                // Verify header checksum
+                const headerData = new Uint8Array(bytes.slice(0, offset - 2));
+                if (!this.dataProcessor.verifyChecksum(headerData, headerChecksum)) {
+                    return null; // Invalid header checksum
+                }
+                
+                return {
+                    type: type,
+                    filename: filename,
+                    totalChunks: totalChunks,
+                    totalSize: totalSize
+                };
+            }
+
+            /**
+             * Decode a single chunk from audio buffer
+             * @param {Float32Array} audioData - Audio samples containing chunk
+             * @returns {Object|null} Decoded chunk or null if not enough data
+             */
+            decodeChunk(audioData) {
+                // Minimum chunk size: index(2) + length(1) + checksum(2) = 5 bytes
+                // Each byte = 11 bits
+                const minChunkBits = 5 * 11;
+                const minChunkSamples = minChunkBits * this.bitDuration;
+                
+                if (audioData.length < minChunkSamples) {
+                    return null;
+                }
+                
+                // Decode bits from audio
+                const bits = this.frequencyDetector.detectBitStream(audioData);
+                
+                if (bits.length < minChunkBits) {
+                    return null;
+                }
+                
+                // Decode bytes from bits
+                const bytes = this.decodeBytesFromBits(bits);
+                
+                if (bytes.length < 5) {
+                    return null;
+                }
+                
+                // Parse chunk
+                let offset = 0;
+                
+                // Chunk index (2 bytes, big-endian)
+                const chunkIndex = (bytes[offset] << 8) | bytes[offset + 1];
+                offset += 2;
+                
+                // Data length (1 byte)
+                const dataLength = bytes[offset++];
+                
+                // Data (variable length)
+                if (bytes.length < offset + dataLength + 2) {
+                    return null; // Not enough data
+                }
+                const chunkData = bytes.slice(offset, offset + dataLength);
+                offset += dataLength;
+                
+                // Chunk checksum (2 bytes)
+                const chunkChecksum = (bytes[offset] << 8) | bytes[offset + 1];
+                
+                return {
+                    index: chunkIndex,
+                    data: new Uint8Array(chunkData),
+                    checksum: chunkChecksum
+                };
+            }
+
+            /**
+             * Decode bytes from bit stream with start/stop bit detection and parity checking
+             * @param {Array<number>} bits - Array of bits (0 or 1)
+             * @returns {Array<number>} Array of decoded bytes
+             */
+            decodeBytesFromBits(bits) {
+                const bytes = [];
+                let i = 0;
+                
+                while (i + 11 <= bits.length) {
+                    // Look for start bit (0)
+                    if (bits[i] !== 0) {
+                        i++;
+                        continue;
+                    }
+                    
+                    // Extract 8 data bits (LSB first)
+                    let byte = 0;
+                    let onesCount = 0;
+                    
+                    for (let bit = 0; bit < 8; bit++) {
+                        const bitValue = bits[i + 1 + bit];
+                        if (bitValue === 1) {
+                            byte |= (1 << bit);
+                            onesCount++;
+                        }
+                    }
+                    
+                    // Check parity bit (even parity)
+                    const parityBit = bits[i + 9];
+                    const expectedParity = onesCount % 2;
+                    
+                    if (parityBit !== expectedParity) {
+                        // Parity error - skip this byte
+                        i++;
+                        continue;
+                    }
+                    
+                    // Check stop bit (1)
+                    if (bits[i + 10] !== 1) {
+                        // Invalid stop bit - skip
+                        i++;
+                        continue;
+                    }
+                    
+                    // Valid byte decoded
+                    bytes.push(byte);
+                    i += 11; // Move to next byte
+                }
+                
+                return bytes;
+            }
+
+            /**
+             * Estimate number of bits in header
+             * @param {Object} header - Header object
+             * @returns {number} Estimated bit count
+             */
+            estimateHeaderBitCount(header) {
+                // magic(2) + type(1) + filenameLen(1) + filename(variable) + chunks(2) + size(4) + checksum(2)
+                const filenameLength = header.filename ? header.filename.length : 0;
+                const byteCount = 12 + filenameLength;
+                return byteCount * 11; // 11 bits per byte
+            }
+
+            /**
+             * Estimate number of bits in chunk
+             * @param {Object} chunk - Chunk object
+             * @returns {number} Estimated bit count
+             */
+            estimateChunkBitCount(chunk) {
+                // index(2) + length(1) + data(variable) + checksum(2)
+                const byteCount = 5 + chunk.data.length;
+                return byteCount * 11; // 11 bits per byte
+            }
+
+            /**
+             * Append audio data to buffer
+             * @param {Float32Array} audioData - Audio samples to append
+             */
+            appendToBuffer(audioData) {
+                const newBuffer = new Float32Array(this.audioBuffer.length + audioData.length);
+                newBuffer.set(this.audioBuffer, 0);
+                newBuffer.set(audioData, this.audioBuffer.length);
+                this.audioBuffer = newBuffer;
+            }
+
+            /**
+             * Register callback for chunk received event
+             * @param {Function} callback - Callback function that receives chunk object
+             */
+            onChunkReceived(callback) {
+                if (typeof callback === 'function') {
+                    this.chunkReceivedCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Register callback for transmission complete event
+             * @param {Function} callback - Callback function called when transmission completes
+             */
+            onTransmissionComplete(callback) {
+                if (typeof callback === 'function') {
+                    this.transmissionCompleteCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Register callback for error events
+             * @param {Function} callback - Callback function that receives error object
+             */
+            onError(callback) {
+                if (typeof callback === 'function') {
+                    this.errorCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Notify all chunk received callbacks
+             * @param {Object} chunk - The received chunk
+             */
+            notifyChunkReceived(chunk) {
+                for (const callback of this.chunkReceivedCallbacks) {
+                    try {
+                        callback(chunk);
+                    } catch (e) {
+                        console.error('Error in chunk received callback:', e);
+                    }
+                }
+            }
+
+            /**
+             * Notify all transmission complete callbacks
+             */
+            notifyTransmissionComplete() {
+                for (const callback of this.transmissionCompleteCallbacks) {
+                    try {
+                        callback();
+                    } catch (e) {
+                        console.error('Error in transmission complete callback:', e);
+                    }
+                }
+            }
+
+            /**
+             * Notify all error callbacks
+             * @param {Object} error - Error object with type and message
+             */
+            notifyError(error) {
+                for (const callback of this.errorCallbacks) {
+                    try {
+                        callback(error);
+                    } catch (e) {
+                        console.error('Error in error callback:', e);
+                    }
+                }
+            }
+
+            /**
+             * Get all received chunks
+             * @returns {Array<Object>} Array of received chunks
+             */
+            getReceivedChunks() {
+                return this.receivedChunks;
+            }
+
+            /**
+             * Get header information
+             * @returns {Object|null} Header object or null if not decoded yet
+             */
+            getHeader() {
+                return this.header;
+            }
+
+            /**
+             * Get current decoder state
+             * @returns {string} Current state
+             */
+            getState() {
+                return this.state;
+            }
+        }
+
+        // AudioRecorder class - Captures audio from microphone
+        class AudioRecorder {
+            /**
+             * Create an audio recorder for capturing microphone input
+             * @param {number} sampleRate - Sample rate for recording (default: 48000 Hz)
+             */
+            constructor(sampleRate = 48000) {
+                this.sampleRate = sampleRate;
+                this.mediaStream = null;
+                this.audioContext = null;
+                this.sourceNode = null;
+                this.processorNode = null;
+                this.isRecording = false;
+                this.hasPermission = false;
+                this.audioDataCallbacks = [];
+            }
+
+            /**
+             * Request microphone permission from the user
+             * @returns {Promise<boolean>} Promise that resolves to true if permission granted
+             */
+            async requestPermission() {
+                try {
+                    // Check if getUserMedia is supported
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        throw new Error('getUserMedia is not supported in this browser');
+                    }
+
+                    // Request microphone access
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: false,
+                            noiseSuppression: false,
+                            autoGainControl: false,
+                            sampleRate: this.sampleRate
+                        }
+                    });
+
+                    // Store the stream for later use
+                    this.mediaStream = stream;
+                    this.hasPermission = true;
+
+                    return true;
+
+                } catch (error) {
+                    this.hasPermission = false;
+
+                    // Handle specific error types
+                    if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                        throw new Error('Microphone permission denied. Please allow microphone access in your browser settings.');
+                    } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                        throw new Error('No microphone found. Please connect a microphone and try again.');
+                    } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                        throw new Error('Microphone is already in use by another application.');
+                    } else {
+                        throw new Error('Failed to access microphone: ' + error.message);
+                    }
+                }
+            }
+
+            /**
+             * Start recording audio from the microphone
+             * @returns {Promise<void>} Promise that resolves when recording starts
+             */
+            async startRecording() {
+                // Check if we have permission
+                if (!this.hasPermission || !this.mediaStream) {
+                    throw new Error('Microphone permission not granted. Call requestPermission() first.');
+                }
+
+                // Stop any existing recording
+                if (this.isRecording) {
+                    this.stopRecording();
+                }
+
+                try {
+                    // Create audio context if needed
+                    if (!this.audioContext) {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                            sampleRate: this.sampleRate
+                        });
+                    }
+
+                    // Resume audio context if suspended
+                    if (this.audioContext.state === 'suspended') {
+                        await this.audioContext.resume();
+                    }
+
+                    // Create source node from media stream
+                    this.sourceNode = this.audioContext.createMediaStreamSource(this.mediaStream);
+
+                    // Create script processor node for audio processing
+                    // Buffer size: 4096 samples provides good balance between latency and processing
+                    const bufferSize = 4096;
+                    this.processorNode = this.audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+                    // Set up audio processing callback
+                    this.processorNode.onaudioprocess = (event) => {
+                        if (this.isRecording) {
+                            // Get audio data from input buffer
+                            const inputBuffer = event.inputBuffer;
+                            const audioData = inputBuffer.getChannelData(0);
+
+                            // Create a copy of the audio data
+                            const audioDataCopy = new Float32Array(audioData);
+
+                            // Notify all registered callbacks
+                            this.notifyAudioData(audioDataCopy);
+                        }
+                    };
+
+                    // Connect nodes: source -> processor -> destination
+                    // Note: We connect to destination to keep the processing active,
+                    // but we don't actually play the audio (it's just for processing)
+                    this.sourceNode.connect(this.processorNode);
+                    this.processorNode.connect(this.audioContext.destination);
+
+                    this.isRecording = true;
+
+                } catch (error) {
+                    this.isRecording = false;
+                    throw new Error('Failed to start recording: ' + error.message);
+                }
+            }
+
+            /**
+             * Stop recording audio
+             */
+            stopRecording() {
+                if (!this.isRecording) {
+                    return;
+                }
+
+                try {
+                    // Disconnect audio nodes
+                    if (this.processorNode) {
+                        this.processorNode.disconnect();
+                        this.processorNode.onaudioprocess = null;
+                        this.processorNode = null;
+                    }
+
+                    if (this.sourceNode) {
+                        this.sourceNode.disconnect();
+                        this.sourceNode = null;
+                    }
+
+                    // Stop media stream tracks
+                    if (this.mediaStream) {
+                        const tracks = this.mediaStream.getTracks();
+                        tracks.forEach(track => track.stop());
+                        this.mediaStream = null;
+                    }
+
+                    // Close audio context
+                    if (this.audioContext) {
+                        this.audioContext.close();
+                        this.audioContext = null;
+                    }
+
+                    this.isRecording = false;
+                    this.hasPermission = false;
+
+                } catch (error) {
+                    console.error('Error stopping recording:', error);
+                }
+            }
+
+            /**
+             * Register a callback for audio data events
+             * @param {Function} callback - Callback function that receives Float32Array of audio samples
+             */
+            onAudioData(callback) {
+                if (typeof callback === 'function') {
+                    this.audioDataCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Clear all audio data callbacks
+             */
+            clearAudioDataCallbacks() {
+                this.audioDataCallbacks = [];
+            }
+
+            /**
+             * Notify all registered callbacks with audio data
+             * @param {Float32Array} audioData - Audio samples to send to callbacks
+             * @private
+             */
+            notifyAudioData(audioData) {
+                for (const callback of this.audioDataCallbacks) {
+                    try {
+                        callback(audioData);
+                    } catch (error) {
+                        console.error('Error in audio data callback:', error);
+                    }
+                }
+            }
+
+            /**
+             * Check if currently recording
+             * @returns {boolean} True if recording is active
+             */
+            isCurrentlyRecording() {
+                return this.isRecording;
+            }
+
+            /**
+             * Check if microphone permission has been granted
+             * @returns {boolean} True if permission granted
+             */
+            hasPermissionGranted() {
+                return this.hasPermission;
+            }
+
+            /**
+             * Get the current sample rate
+             * @returns {number} Sample rate in Hz
+             */
+            getSampleRate() {
+                return this.sampleRate;
+            }
+        }
+
+        // ReceiverController class - Wires up receiver mode functionality
+        class ReceiverController {
+            constructor(modeController, dataProcessor) {
+                this.modeController = modeController;
+                this.dataProcessor = dataProcessor;
+                this.audioRecorder = new AudioRecorder();
+                this.audioDecoder = new AudioDecoder();
+                this.progressTracker = new ProgressTracker();
+                this.audioVisualizer = new AudioVisualizer(null, 'receiverLevelFill', 'receiverLevelPeak');
+                this.isReceiving = false;
+                
+                this.statusElement = document.getElementById('receiverStatus');
+                this.dataDisplay = document.getElementById('dataDisplay');
+                
+                // Track received transmissions
+                this.transmissionHistory = [];
+                
+                // Audio level tracking for visualization
+                this.currentAudioLevel = 0;
+                
+                this.initializeReceiverMode();
+            }
+
+            /**
+             * Initialize receiver mode - request permission and start listening
+             */
+            async initializeReceiverMode() {
+                try {
+                    // Check Web Audio API support
+                    if (!window.AudioContext && !window.webkitAudioContext) {
+                        throw new Error('Web Audio API is not supported in this browser');
+                    }
+                    
+                    // Check MediaDevices API support
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        throw new Error('getUserMedia is not supported in this browser');
+                    }
+                    
+                    // Request microphone permission
+                    await this.audioRecorder.requestPermission();
+                    
+                    // Start recording
+                    await this.audioRecorder.startRecording();
+                    
+                    // Start decoder listening
+                    this.audioDecoder.startListening();
+                    
+                    // Connect audio recorder to decoder
+                    this.audioRecorder.onAudioData((audioData) => {
+                        this.audioDecoder.processAudioData(audioData);
+                        
+                        // Update audio level for visualization
+                        this.updateAudioLevel(audioData);
+                    });
+                    
+                    // Register decoder callbacks
+                    this.setupDecoderCallbacks();
+                    
+                    // Show success message
+                    this.showSuccess('✓ Listening for transmission... Waiting for audio signal.');
+                    
+                    // Start audio level visualization
+                    this.audioVisualizer.startLevelMonitoring(() => this.currentAudioLevel);
+                    
+                } catch (error) {
+                    this.handleReceiverError(error);
+                }
+            }
+
+            /**
+             * Update audio level from incoming audio data
+             * @param {Float32Array} audioData - Audio samples
+             */
+            updateAudioLevel(audioData) {
+                // Calculate RMS level
+                let sum = 0;
+                for (let i = 0; i < audioData.length; i++) {
+                    sum += audioData[i] * audioData[i];
+                }
+                const rms = Math.sqrt(sum / audioData.length);
+                
+                // Smooth the level with exponential moving average
+                const smoothing = 0.8;
+                this.currentAudioLevel = (smoothing * this.currentAudioLevel) + ((1 - smoothing) * rms);
+                
+                // Clamp to 0-1 range
+                this.currentAudioLevel = Math.min(Math.max(this.currentAudioLevel, 0), 1);
+            }
+
+            /**
+             * Set up decoder callbacks for chunk received and transmission complete
+             */
+            setupDecoderCallbacks() {
+                // Callback for chunk received
+                this.audioDecoder.onChunkReceived((chunk) => {
+                    this.handleChunkReceived(chunk);
+                });
+                
+                // Callback for transmission complete
+                this.audioDecoder.onTransmissionComplete(() => {
+                    this.handleTransmissionComplete();
+                });
+                
+                // Callback for decoder errors
+                this.audioDecoder.onError((error) => {
+                    this.handleDecoderError(error);
+                });
+            }
+
+            /**
+             * Handle chunk received event
+             * @param {Object} chunk - The received chunk
+             */
+            handleChunkReceived(chunk) {
+                // Start reception if not already started
+                if (!this.isReceiving) {
+                    this.startReception();
+                }
+                
+                // Update progress
+                const header = this.audioDecoder.getHeader();
+                if (header) {
+                    const receivedChunks = this.audioDecoder.getReceivedChunks();
+                    const bytesReceived = receivedChunks.reduce((sum, c) => sum + c.data.length, 0);
+                    
+                    // Update progress tracker
+                    this.progressTracker.setTotal(header.totalSize);
+                    this.progressTracker.updateProgress(bytesReceived);
+                }
+            }
+
+            /**
+             * Handle transmission complete event
+             */
+            handleTransmissionComplete() {
+                try {
+                    // Get all received chunks
+                    const chunks = this.audioDecoder.getReceivedChunks();
+                    const header = this.audioDecoder.getHeader();
+                    
+                    if (!header || chunks.length === 0) {
+                        this.showError('Transmission incomplete: No data received. Please ensure the emitter is transmitting and try again.');
+                        this.endReception();
+                        return;
+                    }
+                    
+                    // Check if we received all expected chunks
+                    if (chunks.length < header.totalChunks) {
+                        this.showError(
+                            `Transmission incomplete: Received ${chunks.length} of ${header.totalChunks} chunks. ` +
+                            'Some data may be missing. Please move devices closer together and try again.'
+                        );
+                        this.endReception();
+                        return;
+                    }
+                    
+                    // Reconstruct data from chunks
+                    const reconstructedData = this.dataProcessor.reconstructData(chunks);
+                    
+                    // Verify reconstructed data size matches expected size
+                    if (reconstructedData.length !== header.totalSize) {
+                        this.showError(
+                            `Data size mismatch: Expected ${header.totalSize} bytes but received ${reconstructedData.length} bytes. ` +
+                            'The transmission may be corrupted. Please try again.'
+                        );
+                        this.endReception();
+                        return;
+                    }
+                    
+                    // Handle the received data based on type
+                    if (header.type === 'text') {
+                        this.handleReceivedText(reconstructedData);
+                    } else if (header.type === 'file') {
+                        this.handleReceivedFile(reconstructedData, header.filename);
+                    }
+                    
+                    // Add to transmission history
+                    this.transmissionHistory.push({
+                        timestamp: new Date(),
+                        type: header.type,
+                        filename: header.filename,
+                        size: reconstructedData.length,
+                        data: reconstructedData
+                    });
+                    
+                    // Show success message with details
+                    const sizeKB = (reconstructedData.length / 1024).toFixed(2);
+                    const typeLabel = header.type === 'text' ? 'Text' : 'File';
+                    this.showSuccess(
+                        `✓ ${typeLabel} received successfully! (${sizeKB} KB)` +
+                        (header.filename ? ` - ${header.filename}` : '')
+                    );
+                    
+                    // End reception
+                    this.endReception();
+                    
+                } catch (error) {
+                    this.showError('Failed to process received data: ' + error.message + ' Please try the transmission again.');
+                    this.endReception();
+                }
+            }
+
+            /**
+             * Handle decoder errors
+             * @param {Object} error - Error object from decoder
+             */
+            handleDecoderError(error) {
+                let errorMessage = '';
+                
+                switch (error.type) {
+                    case 'PREAMBLE_TIMEOUT':
+                        errorMessage = '⏱ ' + error.message;
+                        break;
+                    
+                    case 'CHECKSUM_MISMATCH':
+                        errorMessage = '⚠ ' + error.message;
+                        if (error.receivedChunks > 0) {
+                            errorMessage += ` (Received ${error.receivedChunks} of ${error.expectedChunks} chunks before errors occurred)`;
+                        }
+                        break;
+                    
+                    default:
+                        errorMessage = '❌ Decoder error: ' + (error.message || 'Unknown error occurred');
+                }
+                
+                this.showError(errorMessage);
+                this.endReception();
+                
+                // Restart listening for next transmission
+                setTimeout(() => {
+                    this.audioDecoder.startListening();
+                    this.hideStatus();
+                }, 3000);
+            }
+
+            /**
+             * Handle received text data
+             * @param {Uint8Array} data - The received text data
+             */
+            handleReceivedText(data) {
+                // Decode text from bytes
+                const decoder = new TextDecoder();
+                const text = decoder.decode(data);
+                
+                // Display text in UI
+                this.displayText(text);
+                
+                // Add download button for text
+                this.addTextDownloadButton(text);
+            }
+
+            /**
+             * Handle received file data
+             * @param {Uint8Array} data - The received file data
+             * @param {string} filename - The original filename
+             */
+            handleReceivedFile(data, filename) {
+                // Display file information in UI
+                this.displayFileInfo(filename, data.length);
+                
+                // Automatically trigger download with filename preservation
+                this.downloadFile(data, filename);
+            }
+
+            /**
+             * Display text in the UI
+             * @param {string} text - The text to display
+             */
+            displayText(text) {
+                this.dataDisplay.classList.remove('empty');
+                this.dataDisplay.textContent = text;
+            }
+
+            /**
+             * Display file information in the UI
+             * @param {string} filename - The filename
+             * @param {number} size - The file size in bytes
+             */
+            displayFileInfo(filename, size) {
+                this.dataDisplay.classList.remove('empty');
+                
+                const sizeKB = (size / 1024).toFixed(2);
+                const info = `File received: ${filename}\nSize: ${sizeKB} KB\n\nDownload started automatically.`;
+                
+                this.dataDisplay.textContent = info;
+            }
+
+            /**
+             * Add download button for text data
+             * @param {string} text - The text to download
+             */
+            addTextDownloadButton(text) {
+                // Create download button if it doesn't exist
+                let downloadBtn = document.getElementById('textDownloadBtn');
+                
+                if (!downloadBtn) {
+                    downloadBtn = document.createElement('button');
+                    downloadBtn.id = 'textDownloadBtn';
+                    downloadBtn.className = 'send-btn';
+                    downloadBtn.textContent = 'Download as Text File';
+                    downloadBtn.style.marginTop = '15px';
+                    
+                    // Insert after data display
+                    this.dataDisplay.parentNode.insertBefore(
+                        downloadBtn,
+                        this.dataDisplay.nextSibling
+                    );
+                }
+                
+                // Update click handler
+                downloadBtn.onclick = () => {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(text);
+                    this.downloadFile(data, 'received-text.txt');
+                };
+                
+                // Show the button
+                downloadBtn.style.display = 'block';
+            }
+
+            /**
+             * Download file with filename preservation
+             * @param {Uint8Array} data - The file data
+             * @param {string} filename - The filename to use
+             */
+            downloadFile(data, filename) {
+                try {
+                    // Create a Blob from the data
+                    const blob = new Blob([data], { type: 'application/octet-stream' });
+                    
+                    // Create a download link
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename || 'received-file';
+                    
+                    // Trigger download
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // Clean up
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                } catch (error) {
+                    this.showError('Failed to download file: ' + error.message);
+                }
+            }
+
+            /**
+             * Start reception - update UI state
+             */
+            startReception() {
+                this.isReceiving = true;
+                
+                // Lock mode switching
+                this.modeController.lockMode();
+                
+                // Clear previous data display
+                this.dataDisplay.classList.add('empty');
+                this.dataDisplay.textContent = 'Receiving data...';
+                
+                // Hide any previous download button
+                const downloadBtn = document.getElementById('textDownloadBtn');
+                if (downloadBtn) {
+                    downloadBtn.style.display = 'none';
+                }
+                
+                // Clear status
+                this.hideStatus();
+                
+                // Set up progress tracking
+                this.progressTracker.clearCallbacks();
+                this.progressTracker.onUpdate((progressInfo) => {
+                    this.progressTracker.updateUI('receiver', progressInfo);
+                });
+            }
+
+            /**
+             * End reception - unlock UI and reset state
+             */
+            endReception() {
+                this.isReceiving = false;
+                
+                // Unlock mode switching
+                this.modeController.unlockMode();
+                
+                // Keep progress display visible to show final state
+                // User can see 100% completion
+            }
+
+            /**
+             * Handle receiver errors
+             * @param {Error} error - The error that occurred
+             */
+            handleReceiverError(error) {
+                let errorMessage = '';
+                let instructions = '';
+                
+                if (error.message.includes('permission denied') || error.message.includes('Permission denied')) {
+                    errorMessage = '🎤 Microphone permission denied.';
+                    instructions = 'Please click the microphone icon in your browser\'s address bar and allow access, then reload the page.';
+                } else if (error.message.includes('No microphone found')) {
+                    errorMessage = '🎤 No microphone detected.';
+                    instructions = 'Please connect a microphone to your device and reload the page.';
+                } else if (error.message.includes('already in use')) {
+                    errorMessage = '🎤 Microphone is currently in use.';
+                    instructions = 'Please close other applications using the microphone (like video calls or voice recorders) and reload the page.';
+                } else if (error.message.includes('not supported') || error.message.includes('getUserMedia')) {
+                    errorMessage = '❌ Web Audio API is not supported.';
+                    instructions = 'Please use a modern browser like Chrome (version 34+), Firefox (version 25+), Safari (version 14+), or Edge.';
+                } else {
+                    errorMessage = '❌ Receiver initialization failed.';
+                    instructions = error.message || 'An unknown error occurred. Please try refreshing the page.';
+                }
+                
+                this.showError(errorMessage + ' ' + instructions);
+                
+                // Disable receiver mode if critical error
+                this.modeController.unlockMode();
+            }
+
+            /**
+             * Show success message
+             * @param {string} message - Success message to display
+             */
+            showSuccess(message) {
+                this.statusElement.textContent = message;
+                this.statusElement.className = 'status-message success active';
+            }
+
+            /**
+             * Show error message
+             * @param {string} message - Error message to display
+             */
+            showError(message) {
+                this.statusElement.textContent = message;
+                this.statusElement.className = 'status-message error active';
+            }
+
+            /**
+             * Hide status message
+             */
+            hideStatus() {
+                this.statusElement.className = 'status-message';
+                this.statusElement.textContent = '';
+            }
+
+            /**
+             * Get transmission history
+             * @returns {Array} Array of received transmissions
+             */
+            getTransmissionHistory() {
+                return this.transmissionHistory;
+            }
+
+            /**
+             * Clear transmission history
+             */
+            clearTransmissionHistory() {
+                this.transmissionHistory = [];
+            }
+        }
+
         // Initialize the application
-        const modeController = new ModeController();
-        const dataProcessor = new DataProcessor();
-        const inputHandler = new InputHandler(dataProcessor);
+        let modeController, dataProcessor, inputHandler, emitterController, receiverController;
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize core components
+            modeController = new ModeController();
+            dataProcessor = new DataProcessor();
+            inputHandler = new InputHandler(dataProcessor);
+            emitterController = new EmitterController(modeController, dataProcessor, inputHandler);
+            
+            // Initialize receiver controller when receiver mode is selected
+            let receiverInitialized = false;
+            
+            // Override mode controller's setMode to initialize receiver on first use
+            const originalSetMode = modeController.setMode.bind(modeController);
+            modeController.setMode = function(mode) {
+                originalSetMode(mode);
+                
+                // Initialize receiver controller when receiver mode is first selected
+                if (mode === 'receiver' && !receiverInitialized) {
+                    receiverController = new ReceiverController(modeController, dataProcessor);
+                    receiverInitialized = true;
+                }
+            };
+        });
     </script>
 </body>
 </html>
