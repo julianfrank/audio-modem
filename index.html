@@ -571,6 +571,218 @@
                 display: none;
             }
         }
+
+        /* Sync UI Styles */
+        .sync-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .sync-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .sync-btn {
+            width: 100%;
+            padding: 12px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .sync-btn:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .sync-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .sync-btn.active {
+            background: #ef4444;
+        }
+
+        .sync-btn.active:hover:not(:disabled) {
+            background: #dc2626;
+        }
+
+        .sync-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .sync-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .sync-status {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .sync-status.active {
+            display: block;
+        }
+
+        .sync-status.idle {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .sync-status.transmitting {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .sync-status.listening {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .sync-status.detected {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .sync-status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .frequency-display {
+            display: none;
+            margin-top: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .frequency-display.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .frequency-display-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .frequency-values {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .frequency-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .frequency-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .frequency-label {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .frequency-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+        }
+
+        .frequency-unit {
+            font-size: 11px;
+            color: #666;
+            margin-left: 2px;
+        }
+
+        .spectrum-canvas {
+            width: 100%;
+            height: 120px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            border: 2px solid #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .spectrum-canvas.active {
+            display: block;
+        }
+
+        .sync-help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        /* Responsive sync UI */
+        @media (max-width: 600px) {
+            .frequency-values {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .spectrum-canvas {
+                height: 80px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -606,6 +818,20 @@
                 Send Data
             </button>
 
+            <!-- Sync Section for Emitter -->
+            <div class="sync-section">
+                <div class="sync-section-title">🔄 Frequency Synchronization</div>
+                <button class="sync-btn" id="emitterSyncBtn">
+                    Start Sync Transmission
+                </button>
+                <div class="sync-status" id="emitterSyncStatus">
+                    Ready to transmit calibration signal
+                </div>
+                <div class="sync-help-text">
+                    Click to broadcast calibration tones for receiver frequency detection
+                </div>
+            </div>
+
             <!-- Audio Output Visualizer -->
             <div class="audio-visualizer" id="emitterVisualizer">
                 <div class="visualizer-label">Audio Output Level</div>
@@ -635,6 +861,52 @@
             <div class="listening-indicator">
                 <div class="listening-icon"></div>
                 <div class="listening-text">Listening for transmission...</div>
+            </div>
+
+            <!-- Sync Section for Receiver -->
+            <div class="sync-section">
+                <div class="sync-section-title">🔄 Frequency Synchronization</div>
+                <button class="sync-btn" id="receiverSyncBtn">
+                    Start Sync Listening
+                </button>
+                <div class="sync-status" id="receiverSyncStatus">
+                    Ready to detect calibration signal
+                </div>
+                
+                <!-- Spectrum Visualization Canvas -->
+                <canvas class="spectrum-canvas" id="spectrumCanvas" width="600" height="120"></canvas>
+                
+                <!-- Frequency Display -->
+                <div class="frequency-display" id="frequencyDisplay">
+                    <div class="frequency-display-title">Detected Frequencies</div>
+                    <div class="frequency-values">
+                        <div class="frequency-item">
+                            <div class="frequency-label">Bit 0</div>
+                            <div class="frequency-value">
+                                <span id="freq0Value">----</span>
+                                <span class="frequency-unit">Hz</span>
+                            </div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-label">Preamble</div>
+                            <div class="frequency-value">
+                                <span id="freqPreambleValue">----</span>
+                                <span class="frequency-unit">Hz</span>
+                            </div>
+                        </div>
+                        <div class="frequency-item">
+                            <div class="frequency-label">Bit 1</div>
+                            <div class="frequency-value">
+                                <span id="freq1Value">----</span>
+                                <span class="frequency-unit">Hz</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sync-help-text">
+                    Click to listen for calibration tones and automatically detect frequencies
+                </div>
             </div>
 
             <!-- Audio Input Visualizer -->
@@ -740,6 +1012,1003 @@
                 this.isLocked = false;
                 document.getElementById('emitterBtn').disabled = false;
                 document.getElementById('receiverBtn').disabled = false;
+            }
+        }
+
+        // SyncController class - Manages synchronization state and operations
+        class SyncController {
+            constructor() {
+                // Sync states: idle, transmitting, listening, detected, error
+                this.state = 'idle';
+                this.stateChangeCallbacks = [];
+                this.frequenciesDetectedCallbacks = [];
+                
+                // References to other components (set later)
+                this.calibrationGenerator = null;
+                this.spectrumAnalyzer = null;
+                this.frequencyDetector = null;
+                this.decoderConfigurator = null;
+            }
+
+            /**
+             * Start emitter sync - begin transmitting calibration signals
+             */
+            startEmitterSync() {
+                if (this.state === 'transmitting') {
+                    return; // Already transmitting
+                }
+                
+                this.setState('transmitting');
+                
+                // Start calibration signal generation
+                if (this.calibrationGenerator) {
+                    this.calibrationGenerator.start();
+                }
+            }
+
+            /**
+             * Stop emitter sync - cease calibration transmission
+             */
+            stopEmitterSync() {
+                if (this.state !== 'transmitting') {
+                    return;
+                }
+                
+                // Stop calibration signal generation
+                if (this.calibrationGenerator) {
+                    this.calibrationGenerator.stop();
+                }
+                
+                this.setState('idle');
+            }
+
+            /**
+             * Start receiver sync - begin listening for calibration signals
+             * @returns {Promise<void>}
+             */
+            async startReceiverSync() {
+                if (this.state === 'listening') {
+                    return; // Already listening
+                }
+                
+                this.setState('listening');
+                
+                // Start spectrum analysis
+                if (this.spectrumAnalyzer && this.frequencyDetector) {
+                    // Spectrum analysis will be handled by the receiver controller
+                    // This method just updates the state
+                }
+            }
+
+            /**
+             * Stop receiver sync - cease listening for calibration signals
+             */
+            stopReceiverSync() {
+                if (this.state !== 'listening' && this.state !== 'detected') {
+                    return;
+                }
+                
+                // Stop spectrum analysis
+                if (this.spectrumAnalyzer) {
+                    this.spectrumAnalyzer.disconnect();
+                }
+                
+                this.setState('idle');
+            }
+
+            /**
+             * Handle successful frequency detection
+             * @param {Object} frequencies - Detected frequencies {preamble, bit0, bit1, confidence}
+             */
+            onFrequenciesDetected(frequencies) {
+                this.setState('detected');
+                
+                // Notify all callbacks
+                for (const callback of this.frequenciesDetectedCallbacks) {
+                    try {
+                        callback(frequencies);
+                    } catch (e) {
+                        console.error('Error in frequencies detected callback:', e);
+                    }
+                }
+            }
+
+            /**
+             * Handle sync error
+             * @param {string} errorMessage - Error message
+             */
+            onSyncError(errorMessage) {
+                this.setState('error');
+            }
+
+            /**
+             * Get current sync state
+             * @returns {string} Current state
+             */
+            getSyncState() {
+                return this.state;
+            }
+
+            /**
+             * Set sync state and notify callbacks
+             * @param {string} newState - New state to set
+             */
+            setState(newState) {
+                const oldState = this.state;
+                this.state = newState;
+                
+                // Notify all state change callbacks
+                for (const callback of this.stateChangeCallbacks) {
+                    try {
+                        callback(newState, oldState);
+                    } catch (e) {
+                        console.error('Error in state change callback:', e);
+                    }
+                }
+            }
+
+            /**
+             * Register callback for state changes
+             * @param {Function} callback - Callback function(newState, oldState)
+             */
+            onStateChange(callback) {
+                if (typeof callback === 'function') {
+                    this.stateChangeCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Register callback for frequency detection
+             * @param {Function} callback - Callback function(frequencies)
+             */
+            onFrequenciesDetectedCallback(callback) {
+                if (typeof callback === 'function') {
+                    this.frequenciesDetectedCallbacks.push(callback);
+                }
+            }
+
+            /**
+             * Set calibration generator reference
+             * @param {Object} generator - CalibrationSignalGenerator instance
+             */
+            setCalibrationGenerator(generator) {
+                this.calibrationGenerator = generator;
+            }
+
+            /**
+             * Set spectrum analyzer reference
+             * @param {Object} analyzer - SpectrumAnalyzer instance
+             */
+            setSpectrumAnalyzer(analyzer) {
+                this.spectrumAnalyzer = analyzer;
+            }
+
+            /**
+             * Set frequency detector reference
+             * @param {Object} detector - FrequencyDetector instance
+             */
+            setFrequencyDetector(detector) {
+                this.frequencyDetector = detector;
+            }
+
+            /**
+             * Set decoder configurator reference
+             * @param {Object} configurator - DecoderConfigurator instance
+             */
+            setDecoderConfigurator(configurator) {
+                this.decoderConfigurator = configurator;
+            }
+        }
+
+        // CalibrationSignalGenerator class - Generates calibration tone sequences
+        class CalibrationSignalGenerator {
+            constructor() {
+                this.audioContext = null;
+                this.sourceNode = null;
+                this.isTransmitting = false;
+                
+                // Frequencies (Hz)
+                this.freqPreamble = 5500;
+                this.freq0 = 4500;
+                this.freq1 = 6500;
+                
+                // Timing (seconds)
+                this.toneDuration = 2.0;  // 2000ms
+                this.silenceDuration = 0.5;  // 500ms
+                
+                this.sampleRate = 48000;
+            }
+
+            /**
+             * Start transmitting calibration signals
+             */
+            start() {
+                if (this.isTransmitting) {
+                    return;
+                }
+                
+                this.isTransmitting = true;
+                this.playCalibrationSequence();
+            }
+
+            /**
+             * Stop transmitting calibration signals
+             */
+            stop() {
+                this.isTransmitting = false;
+                
+                if (this.sourceNode) {
+                    try {
+                        this.sourceNode.stop();
+                    } catch (e) {
+                        // Ignore if already stopped
+                    }
+                    this.sourceNode = null;
+                }
+                
+                if (this.audioContext) {
+                    this.audioContext.close();
+                    this.audioContext = null;
+                }
+            }
+
+            /**
+             * Play the calibration sequence (loops continuously)
+             */
+            async playCalibrationSequence() {
+                if (!this.isTransmitting) {
+                    return;
+                }
+                
+                try {
+                    // Create audio context if needed
+                    if (!this.audioContext) {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                            sampleRate: this.sampleRate
+                        });
+                    }
+                    
+                    // Resume if suspended
+                    if (this.audioContext.state === 'suspended') {
+                        await this.audioContext.resume();
+                    }
+                    
+                    // Generate calibration sequence
+                    const audioBuffer = this.generateCalibrationSequence();
+                    
+                    // Create source node
+                    this.sourceNode = this.audioContext.createBufferSource();
+                    this.sourceNode.buffer = audioBuffer;
+                    this.sourceNode.loop = true;  // Loop continuously
+                    this.sourceNode.connect(this.audioContext.destination);
+                    
+                    // Handle end (shouldn't happen with loop=true, but just in case)
+                    this.sourceNode.onended = () => {
+                        if (this.isTransmitting) {
+                            // Restart if still transmitting
+                            this.playCalibrationSequence();
+                        }
+                    };
+                    
+                    // Start playback
+                    this.sourceNode.start(0);
+                    
+                } catch (error) {
+                    console.error('Error playing calibration sequence:', error);
+                    this.isTransmitting = false;
+                }
+            }
+
+            /**
+             * Generate the complete calibration sequence audio buffer
+             * @returns {AudioBuffer} The calibration sequence
+             */
+            generateCalibrationSequence() {
+                // Sequence: Preamble -> Silence -> Bit0 -> Silence -> Bit1 -> Silence
+                const preambleTone = this.generateTone(this.freqPreamble, this.toneDuration);
+                const bit0Tone = this.generateTone(this.freq0, this.toneDuration);
+                const bit1Tone = this.generateTone(this.freq1, this.toneDuration);
+                const silence = this.generateSilence(this.silenceDuration);
+                
+                // Calculate total length
+                const totalLength = preambleTone.length + silence.length +
+                                  bit0Tone.length + silence.length +
+                                  bit1Tone.length + silence.length;
+                
+                // Create audio buffer
+                const audioBuffer = this.audioContext.createBuffer(1, totalLength, this.sampleRate);
+                const channelData = audioBuffer.getChannelData(0);
+                
+                // Assemble sequence
+                let offset = 0;
+                
+                // Preamble tone
+                channelData.set(preambleTone, offset);
+                offset += preambleTone.length;
+                
+                // Silence
+                channelData.set(silence, offset);
+                offset += silence.length;
+                
+                // Bit 0 tone
+                channelData.set(bit0Tone, offset);
+                offset += bit0Tone.length;
+                
+                // Silence
+                channelData.set(silence, offset);
+                offset += silence.length;
+                
+                // Bit 1 tone
+                channelData.set(bit1Tone, offset);
+                offset += bit1Tone.length;
+                
+                // Silence
+                channelData.set(silence, offset);
+                
+                return audioBuffer;
+            }
+
+            /**
+             * Generate a tone at a specific frequency
+             * @param {number} frequency - Frequency in Hz
+             * @param {number} duration - Duration in seconds
+             * @returns {Float32Array} Audio samples
+             */
+            generateTone(frequency, duration) {
+                const samples = Math.floor(this.sampleRate * duration);
+                const tone = new Float32Array(samples);
+                
+                for (let i = 0; i < samples; i++) {
+                    const t = i / this.sampleRate;
+                    tone[i] = Math.sin(2 * Math.PI * frequency * t) * 0.5;
+                }
+                
+                return tone;
+            }
+
+            /**
+             * Generate silence
+             * @param {number} duration - Duration in seconds
+             * @returns {Float32Array} Silent audio samples
+             */
+            generateSilence(duration) {
+                const samples = Math.floor(this.sampleRate * duration);
+                return new Float32Array(samples);  // All zeros
+            }
+
+            /**
+             * Check if currently transmitting
+             * @returns {boolean} True if transmitting
+             */
+            isTransmittingCalibration() {
+                return this.isTransmitting;
+            }
+        }
+
+        // SpectrumAnalyzer class - Performs FFT analysis on audio input
+        class SpectrumAnalyzer {
+            constructor(audioContext, fftSize = 8192) {
+                this.audioContext = audioContext;
+                this.fftSize = fftSize;
+                this.analyser = null;
+                this.frequencyData = null;
+                this.isConnected = false;
+            }
+
+            /**
+             * Connect to an audio source node
+             * @param {AudioNode} sourceNode - The audio source to analyze
+             */
+            connect(sourceNode) {
+                if (this.isConnected) {
+                    this.disconnect();
+                }
+                
+                // Create analyser node
+                this.analyser = this.audioContext.createAnalyser();
+                this.analyser.fftSize = this.fftSize;
+                this.analyser.smoothingTimeConstant = 0.8;
+                
+                // Allocate frequency data array
+                this.frequencyData = new Float32Array(this.analyser.frequencyBinCount);
+                
+                // Connect source to analyser
+                sourceNode.connect(this.analyser);
+                
+                this.isConnected = true;
+            }
+
+            /**
+             * Disconnect from audio source
+             */
+            disconnect() {
+                if (this.analyser) {
+                    this.analyser.disconnect();
+                    this.analyser = null;
+                }
+                this.isConnected = false;
+                this.frequencyData = null;
+            }
+
+            /**
+             * Get current frequency data
+             * @returns {Float32Array} Frequency data in dB
+             */
+            getFrequencyData() {
+                if (!this.analyser || !this.frequencyData) {
+                    return new Float32Array(0);
+                }
+                
+                this.analyser.getFloatFrequencyData(this.frequencyData);
+                return this.frequencyData;
+            }
+
+            /**
+             * Get frequency bins for a specific range
+             * @param {number} minFreq - Minimum frequency (Hz)
+             * @param {number} maxFreq - Maximum frequency (Hz)
+             * @returns {Float32Array} Frequency data for the range
+             */
+            getFrequencyRange(minFreq, maxFreq) {
+                const fullData = this.getFrequencyData();
+                
+                const minIndex = this.frequencyToIndex(minFreq);
+                const maxIndex = this.frequencyToIndex(maxFreq);
+                
+                return fullData.slice(minIndex, maxIndex + 1);
+            }
+
+            /**
+             * Convert frequency to FFT bin index
+             * @param {number} frequency - Frequency in Hz
+             * @returns {number} Bin index
+             */
+            frequencyToIndex(frequency) {
+                const nyquist = this.audioContext.sampleRate / 2;
+                const index = Math.round((frequency / nyquist) * this.analyser.frequencyBinCount);
+                return Math.max(0, Math.min(index, this.analyser.frequencyBinCount - 1));
+            }
+
+            /**
+             * Convert FFT bin index to frequency
+             * @param {number} index - Bin index
+             * @returns {number} Frequency in Hz
+             */
+            indexToFrequency(index) {
+                const nyquist = this.audioContext.sampleRate / 2;
+                return (index / this.analyser.frequencyBinCount) * nyquist;
+            }
+
+            /**
+             * Get all frequency bins
+             * @returns {Array<number>} Array of bin indices
+             */
+            getFrequencyBins() {
+                if (!this.analyser) {
+                    return [];
+                }
+                
+                const bins = [];
+                for (let i = 0; i < this.analyser.frequencyBinCount; i++) {
+                    bins.push(i);
+                }
+                return bins;
+            }
+
+            /**
+             * Check if connected
+             * @returns {boolean} True if connected to audio source
+             */
+            isAnalyzerConnected() {
+                return this.isConnected;
+            }
+        }
+
+        // SyncFrequencyDetector class - Detects calibration frequencies from spectrum
+        class SyncFrequencyDetector {
+            constructor() {
+                this.magnitudeThreshold = -40;  // dB
+                this.minSeparation = 500;  // Hz
+            }
+
+            /**
+             * Detect peaks in spectrum data
+             * @param {Float32Array} spectrumData - Frequency spectrum in dB
+             * @param {number} minFreq - Minimum frequency to consider (Hz)
+             * @param {number} maxFreq - Maximum frequency to consider (Hz)
+             * @param {SpectrumAnalyzer} analyzer - Spectrum analyzer for frequency conversion
+             * @returns {Array<Object>} Array of peaks {frequency, magnitude, index}
+             */
+            detectPeaks(spectrumData, minFreq, maxFreq, analyzer) {
+                const peaks = [];
+                
+                const minIndex = analyzer.frequencyToIndex(minFreq);
+                const maxIndex = analyzer.frequencyToIndex(maxFreq);
+                
+                // Find local maxima
+                for (let i = minIndex + 1; i < maxIndex - 1; i++) {
+                    const current = spectrumData[i];
+                    const prev = spectrumData[i - 1];
+                    const next = spectrumData[i + 1];
+                    
+                    // Check if local maximum and above threshold
+                    if (current > prev && current > next && current > this.magnitudeThreshold) {
+                        peaks.push({
+                            frequency: analyzer.indexToFrequency(i),
+                            magnitude: current,
+                            index: i
+                        });
+                    }
+                }
+                
+                // Sort by magnitude (strongest first)
+                peaks.sort((a, b) => b.magnitude - a.magnitude);
+                
+                return peaks;
+            }
+
+            /**
+             * Identify calibration frequencies from peaks
+             * @param {Array<Object>} peaks - Array of detected peaks
+             * @returns {Object|null} Detected frequencies or null
+             */
+            identifyCalibrationFrequencies(peaks) {
+                if (peaks.length < 3) {
+                    return null;
+                }
+                
+                // Take top 3 peaks
+                const top3 = peaks.slice(0, 3);
+                
+                // Validate frequency separation
+                if (!this.validateFrequencies(top3)) {
+                    return null;
+                }
+                
+                // Sort by frequency (ascending)
+                top3.sort((a, b) => a.frequency - b.frequency);
+                
+                // Classify: lowest = bit0, middle = preamble, highest = bit1
+                const result = {
+                    bit0: Math.round(top3[0].frequency),
+                    preamble: Math.round(top3[1].frequency),
+                    bit1: Math.round(top3[2].frequency),
+                    confidence: this.calculateConfidence(top3)
+                };
+                
+                return result;
+            }
+
+            /**
+             * Validate that frequencies are sufficiently separated
+             * @param {Array<Object>} peaks - Array of peaks to validate
+             * @returns {boolean} True if valid
+             */
+            validateFrequencies(peaks) {
+                // Check all pairs for minimum separation
+                for (let i = 0; i < peaks.length; i++) {
+                    for (let j = i + 1; j < peaks.length; j++) {
+                        const separation = Math.abs(peaks[i].frequency - peaks[j].frequency);
+                        if (separation < this.minSeparation) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            /**
+             * Calculate confidence score for detected frequencies
+             * @param {Array<Object>} peaks - Array of detected peaks
+             * @returns {number} Confidence score (0-1)
+             */
+            calculateConfidence(peaks) {
+                if (peaks.length < 3) {
+                    return 0;
+                }
+                
+                // Calculate average magnitude
+                const avgMagnitude = peaks.reduce((sum, p) => sum + p.magnitude, 0) / peaks.length;
+                
+                // Estimate noise floor (assume -60 dB)
+                const noiseFloor = -60;
+                
+                // Peak strength component (0-1)
+                const peakStrength = Math.min(1, (avgMagnitude - noiseFloor) / 40);
+                
+                // Separation component (0-1)
+                const separations = [];
+                for (let i = 0; i < peaks.length; i++) {
+                    for (let j = i + 1; j < peaks.length; j++) {
+                        separations.push(Math.abs(peaks[i].frequency - peaks[j].frequency));
+                    }
+                }
+                const minSep = Math.min(...separations);
+                const separationScore = Math.min(1, minSep / this.minSeparation);
+                
+                // Weighted combination
+                const confidence = (peakStrength * 0.6) + (separationScore * 0.4);
+                
+                return confidence;
+            }
+
+            /**
+             * Estimate noise floor from spectrum data
+             * @param {Float32Array} spectrumData - Frequency spectrum in dB
+             * @returns {number} Estimated noise floor in dB
+             */
+            estimateNoiseFloor(spectrumData) {
+                // Sort magnitudes and take median of lower half
+                const sorted = Array.from(spectrumData).sort((a, b) => a - b);
+                const lowerHalf = sorted.slice(0, Math.floor(sorted.length / 2));
+                const median = lowerHalf[Math.floor(lowerHalf.length / 2)];
+                return median;
+            }
+        }
+
+        // DecoderConfigurator class - Updates decoder with detected frequencies
+        class DecoderConfigurator {
+            constructor() {
+                this.activeFrequencies = {
+                    preamble: 5500,
+                    bit0: 4500,
+                    bit1: 6500,
+                    source: 'default'
+                };
+                this.storageKey = 'audioTransfer_syncFrequencies';
+            }
+
+            /**
+             * Update AudioDecoder with detected frequencies
+             * @param {AudioDecoder} decoder - The decoder to update
+             * @param {Object} frequencies - Detected frequencies {preamble, bit0, bit1}
+             */
+            updateFrequencies(decoder, frequencies) {
+                // Update decoder's frequency detector
+                if (decoder && decoder.frequencyDetector) {
+                    decoder.frequencyDetector.freq0 = frequencies.bit0;
+                    decoder.frequencyDetector.freq1 = frequencies.bit1;
+                    decoder.frequencyDetector.freqPreamble = frequencies.preamble;
+                    
+                    // Recreate Goertzel filters with new frequencies
+                    const sampleRate = decoder.frequencyDetector.sampleRate;
+                    const windowSize = decoder.frequencyDetector.windowSize;
+                    
+                    decoder.frequencyDetector.filter0 = new GoertzelFilter(
+                        frequencies.bit0, sampleRate, windowSize
+                    );
+                    decoder.frequencyDetector.filter1 = new GoertzelFilter(
+                        frequencies.bit1, sampleRate, windowSize
+                    );
+                    decoder.frequencyDetector.filterPreamble = new GoertzelFilter(
+                        frequencies.preamble, sampleRate, windowSize
+                    );
+                }
+                
+                // Update active frequencies
+                this.activeFrequencies = {
+                    preamble: frequencies.preamble,
+                    bit0: frequencies.bit0,
+                    bit1: frequencies.bit1,
+                    source: 'detected'
+                };
+                
+                // Persist to session storage
+                this.persistFrequencies(frequencies);
+            }
+
+            /**
+             * Persist frequencies to session storage
+             * @param {Object} frequencies - Frequencies to persist
+             */
+            persistFrequencies(frequencies) {
+                try {
+                    const data = {
+                        preamble: frequencies.preamble,
+                        bit0: frequencies.bit0,
+                        bit1: frequencies.bit1,
+                        timestamp: Date.now()
+                    };
+                    sessionStorage.setItem(this.storageKey, JSON.stringify(data));
+                } catch (e) {
+                    console.error('Failed to persist frequencies:', e);
+                }
+            }
+
+            /**
+             * Load persisted frequencies from session storage
+             * @returns {Object|null} Persisted frequencies or null
+             */
+            loadPersistedFrequencies() {
+                try {
+                    const data = sessionStorage.getItem(this.storageKey);
+                    if (data) {
+                        return JSON.parse(data);
+                    }
+                } catch (e) {
+                    console.error('Failed to load persisted frequencies:', e);
+                }
+                return null;
+            }
+
+            /**
+             * Reset to default frequencies
+             */
+            resetToDefaults() {
+                this.activeFrequencies = {
+                    preamble: 5500,
+                    bit0: 4500,
+                    bit1: 6500,
+                    source: 'default'
+                };
+                
+                // Clear session storage
+                try {
+                    sessionStorage.removeItem(this.storageKey);
+                } catch (e) {
+                    console.error('Failed to clear persisted frequencies:', e);
+                }
+            }
+
+            /**
+             * Get currently active frequencies
+             * @returns {Object} Active frequencies
+             */
+            getActiveFrequencies() {
+                return this.activeFrequencies;
+            }
+        }
+
+        // SyncUIManager class - Manages sync-related UI elements
+        class SyncUIManager {
+            constructor(mode) {
+                this.mode = mode;  // 'emitter' or 'receiver'
+                
+                // Get UI elements
+                this.syncBtn = document.getElementById(`${mode}SyncBtn`);
+                this.syncStatus = document.getElementById(`${mode}SyncStatus`);
+                
+                if (mode === 'receiver') {
+                    this.spectrumCanvas = document.getElementById('spectrumCanvas');
+                    this.spectrumCtx = this.spectrumCanvas ? this.spectrumCanvas.getContext('2d') : null;
+                    this.frequencyDisplay = document.getElementById('frequencyDisplay');
+                    this.freq0Value = document.getElementById('freq0Value');
+                    this.freqPreambleValue = document.getElementById('freqPreambleValue');
+                    this.freq1Value = document.getElementById('freq1Value');
+                }
+            }
+
+            /**
+             * Show sync button
+             */
+            showSyncButton() {
+                if (this.syncBtn) {
+                    this.syncBtn.style.display = 'block';
+                }
+            }
+
+            /**
+             * Hide sync button
+             */
+            hideSyncButton() {
+                if (this.syncBtn) {
+                    this.syncBtn.style.display = 'none';
+                }
+            }
+
+            /**
+             * Update sync button state based on sync state
+             * @param {string} state - Sync state (idle, transmitting, listening, detected, error)
+             */
+            updateSyncButtonState(state) {
+                if (!this.syncBtn) return;
+                
+                switch (state) {
+                    case 'idle':
+                        this.syncBtn.textContent = this.mode === 'emitter' ? 
+                            'Start Sync Transmission' : 'Start Sync Listening';
+                        this.syncBtn.classList.remove('active');
+                        this.syncBtn.disabled = false;
+                        break;
+                    
+                    case 'transmitting':
+                        this.syncBtn.textContent = 'Stop Sync Transmission';
+                        this.syncBtn.classList.add('active');
+                        this.syncBtn.disabled = false;
+                        break;
+                    
+                    case 'listening':
+                        this.syncBtn.textContent = 'Stop Sync Listening';
+                        this.syncBtn.classList.add('active');
+                        this.syncBtn.disabled = false;
+                        break;
+                    
+                    case 'detected':
+                        this.syncBtn.textContent = 'Start Sync Listening';
+                        this.syncBtn.classList.remove('active');
+                        this.syncBtn.disabled = false;
+                        break;
+                    
+                    case 'error':
+                        this.syncBtn.textContent = this.mode === 'emitter' ? 
+                            'Start Sync Transmission' : 'Start Sync Listening';
+                        this.syncBtn.classList.remove('active');
+                        this.syncBtn.disabled = false;
+                        break;
+                }
+            }
+
+            /**
+             * Display frequency spectrum visualization
+             * @param {Float32Array} spectrumData - Frequency spectrum data
+             * @param {SpectrumAnalyzer} analyzer - Spectrum analyzer for frequency mapping
+             */
+            displayFrequencySpectrum(spectrumData, analyzer) {
+                if (!this.spectrumCanvas || !this.spectrumCtx || this.mode !== 'receiver') {
+                    return;
+                }
+                
+                // Show canvas
+                this.spectrumCanvas.classList.add('active');
+                
+                const width = this.spectrumCanvas.width;
+                const height = this.spectrumCanvas.height;
+                const ctx = this.spectrumCtx;
+                
+                // Clear canvas
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fillRect(0, 0, width, height);
+                
+                // Draw spectrum (4-8 kHz range)
+                const minFreq = 4000;
+                const maxFreq = 8000;
+                const minIndex = analyzer.frequencyToIndex(minFreq);
+                const maxIndex = analyzer.frequencyToIndex(maxFreq);
+                const rangeData = spectrumData.slice(minIndex, maxIndex + 1);
+                
+                // Normalize data for display
+                const minDb = -80;
+                const maxDb = -20;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 2;
+                
+                for (let i = 0; i < rangeData.length; i++) {
+                    const x = (i / rangeData.length) * width;
+                    const normalized = (rangeData[i] - minDb) / (maxDb - minDb);
+                    const y = height - (Math.max(0, Math.min(1, normalized)) * height);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                
+                ctx.stroke();
+                
+                // Draw frequency labels
+                ctx.fillStyle = '#999';
+                ctx.font = '10px monospace';
+                ctx.fillText('4kHz', 5, height - 5);
+                ctx.fillText('6kHz', width / 2 - 15, height - 5);
+                ctx.fillText('8kHz', width - 35, height - 5);
+            }
+
+            /**
+             * Highlight detected peaks in visualization
+             * @param {Array<Object>} peaks - Array of peaks {frequency, magnitude}
+             * @param {SpectrumAnalyzer} analyzer - Spectrum analyzer
+             */
+            highlightDetectedPeaks(peaks, analyzer) {
+                if (!this.spectrumCanvas || !this.spectrumCtx || this.mode !== 'receiver') {
+                    return;
+                }
+                
+                const width = this.spectrumCanvas.width;
+                const height = this.spectrumCanvas.height;
+                const ctx = this.spectrumCtx;
+                
+                const minFreq = 4000;
+                const maxFreq = 8000;
+                
+                // Draw peak markers
+                ctx.fillStyle = '#10b981';
+                peaks.forEach(peak => {
+                    if (peak.frequency >= minFreq && peak.frequency <= maxFreq) {
+                        const x = ((peak.frequency - minFreq) / (maxFreq - minFreq)) * width;
+                        
+                        // Draw vertical line
+                        ctx.beginPath();
+                        ctx.strokeStyle = '#10b981';
+                        ctx.lineWidth = 2;
+                        ctx.moveTo(x, 0);
+                        ctx.lineTo(x, height);
+                        ctx.stroke();
+                        
+                        // Draw frequency label
+                        ctx.fillStyle = '#10b981';
+                        ctx.font = 'bold 11px monospace';
+                        ctx.fillText(Math.round(peak.frequency) + 'Hz', x + 3, 15);
+                    }
+                });
+            }
+
+            /**
+             * Display detected frequency values
+             * @param {Object} frequencies - Detected frequencies {preamble, bit0, bit1}
+             */
+            displayDetectedFrequencies(frequencies) {
+                if (this.mode !== 'receiver') return;
+                
+                // Show frequency display
+                if (this.frequencyDisplay) {
+                    this.frequencyDisplay.classList.add('active');
+                }
+                
+                // Update values
+                if (this.freq0Value) {
+                    this.freq0Value.textContent = frequencies.bit0;
+                }
+                if (this.freqPreambleValue) {
+                    this.freqPreambleValue.textContent = frequencies.preamble;
+                }
+                if (this.freq1Value) {
+                    this.freq1Value.textContent = frequencies.bit1;
+                }
+            }
+
+            /**
+             * Show sync error message
+             * @param {Object} error - Error object {type, message, suggestions}
+             */
+            showSyncError(error) {
+                if (!this.syncStatus) return;
+                
+                this.syncStatus.textContent = '❌ ' + error.message;
+                this.syncStatus.className = 'sync-status error active';
+            }
+
+            /**
+             * Show sync success message
+             */
+            showSyncSuccess() {
+                if (!this.syncStatus) return;
+                
+                this.syncStatus.textContent = '✓ Frequencies detected successfully!';
+                this.syncStatus.className = 'sync-status detected active';
+            }
+
+            /**
+             * Show low signal warning
+             */
+            showLowSignalWarning() {
+                if (!this.syncStatus) return;
+                
+                this.syncStatus.textContent = '⚠ Low signal level. Please increase volume or move devices closer.';
+                this.syncStatus.className = 'sync-status error active';
+            }
+
+            /**
+             * Update sync status display
+             * @param {string} state - Sync state
+             * @param {string} message - Status message
+             */
+            updateSyncStatus(state, message) {
+                if (!this.syncStatus) return;
+                
+                this.syncStatus.textContent = message;
+                this.syncStatus.className = `sync-status ${state} active`;
+            }
+
+            /**
+             * Hide sync status
+             */
+            hideSyncStatus() {
+                if (this.syncStatus) {
+                    this.syncStatus.classList.remove('active');
+                }
             }
         }
 
@@ -1866,10 +3135,20 @@
                 this.sendButton = document.getElementById('sendBtn');
                 this.statusElement = document.getElementById('emitterStatus');
                 
+                // Sync components
+                this.syncController = new SyncController();
+                this.calibrationGenerator = new CalibrationSignalGenerator();
+                this.syncUIManager = new SyncUIManager('emitter');
+                this.isSyncing = false;
+                
+                // Connect sync components
+                this.syncController.setCalibrationGenerator(this.calibrationGenerator);
+                
                 // Check Web Audio API availability on initialization
                 this.checkWebAudioSupport();
                 
                 this.initializeEventListeners();
+                this.initializeSyncEventListeners();
             }
 
             /**
@@ -1890,6 +3169,117 @@
                 this.sendButton.addEventListener('click', () => {
                     this.handleSendClick();
                 });
+            }
+
+            /**
+             * Initialize sync event listeners
+             */
+            initializeSyncEventListeners() {
+                const syncBtn = document.getElementById('emitterSyncBtn');
+                
+                if (syncBtn) {
+                    syncBtn.addEventListener('click', () => {
+                        this.handleSyncClick();
+                    });
+                }
+                
+                // Listen for sync state changes
+                this.syncController.onStateChange((newState, oldState) => {
+                    this.handleSyncStateChange(newState, oldState);
+                });
+            }
+
+            /**
+             * Handle sync button click
+             */
+            handleSyncClick() {
+                const currentState = this.syncController.getSyncState();
+                
+                if (currentState === 'idle' || currentState === 'error') {
+                    this.startEmitterSync();
+                } else if (currentState === 'transmitting') {
+                    this.stopEmitterSync();
+                }
+            }
+
+            /**
+             * Start emitter sync transmission
+             */
+            startEmitterSync() {
+                if (this.isSyncing || this.isTransmitting) {
+                    return;
+                }
+                
+                this.isSyncing = true;
+                
+                // Lock mode switching
+                this.modeController.lockMode();
+                
+                // Disable normal transmission controls
+                this.sendButton.disabled = true;
+                this.inputHandler.textInput.disabled = true;
+                this.inputHandler.fileInput.disabled = true;
+                
+                // Start sync transmission
+                this.syncController.startEmitterSync();
+                
+                // Update UI
+                this.syncUIManager.updateSyncStatus('transmitting', '📡 Transmitting calibration signal...');
+            }
+
+            /**
+             * Stop emitter sync transmission
+             */
+            stopEmitterSync() {
+                if (!this.isSyncing) {
+                    return;
+                }
+                
+                // Stop sync transmission
+                this.syncController.stopEmitterSync();
+                
+                this.isSyncing = false;
+                
+                // Unlock mode switching
+                this.modeController.unlockMode();
+                
+                // Restore normal transmission controls
+                this.inputHandler.updateSendButtonState();
+                this.inputHandler.textInput.disabled = false;
+                this.inputHandler.fileInput.disabled = false;
+                
+                // Update UI
+                this.syncUIManager.updateSyncStatus('idle', 'Ready to transmit calibration signal');
+            }
+
+            /**
+             * Handle sync state changes
+             * @param {string} newState - New sync state
+             * @param {string} oldState - Previous sync state
+             */
+            handleSyncStateChange(newState, oldState) {
+                // Update UI button state
+                this.syncUIManager.updateSyncButtonState(newState);
+                
+                // Handle state-specific logic
+                switch (newState) {
+                    case 'transmitting':
+                        this.syncUIManager.updateSyncStatus('transmitting', '📡 Transmitting calibration signal...');
+                        break;
+                    
+                    case 'idle':
+                        if (oldState === 'transmitting') {
+                            this.syncUIManager.updateSyncStatus('idle', 'Calibration transmission stopped');
+                        }
+                        break;
+                    
+                    case 'error':
+                        this.syncUIManager.showSyncError({
+                            type: 'transmission',
+                            message: 'Failed to transmit calibration signal'
+                        });
+                        break;
+                }
             }
 
             /**
@@ -3184,7 +4574,19 @@
                 // Audio level tracking for visualization
                 this.currentAudioLevel = 0;
                 
+                // Sync components
+                this.syncController = new SyncController();
+                this.syncUIManager = new SyncUIManager('receiver');
+                this.decoderConfigurator = new DecoderConfigurator();
+                this.isSyncing = false;
+                this.syncAudioContext = null;
+                this.syncAnalyzer = null;
+                this.syncDetector = null;
+                this.syncInterval = null;
+                this.syncTimeout = null;
+                
                 this.initializeReceiverMode();
+                this.initializeSyncEventListeners();
             }
 
             /**
@@ -3251,6 +4653,305 @@
                 
                 // Clamp to 0-1 range
                 this.currentAudioLevel = Math.min(Math.max(this.currentAudioLevel, 0), 1);
+            }
+
+            /**
+             * Initialize sync event listeners
+             */
+            initializeSyncEventListeners() {
+                const syncBtn = document.getElementById('receiverSyncBtn');
+                
+                if (syncBtn) {
+                    syncBtn.addEventListener('click', () => {
+                        this.handleSyncClick();
+                    });
+                }
+                
+                // Listen for sync state changes
+                this.syncController.onStateChange((newState, oldState) => {
+                    this.handleSyncStateChange(newState, oldState);
+                });
+                
+                // Listen for frequency detection
+                this.syncController.onFrequenciesDetectedCallback((frequencies) => {
+                    this.handleFrequenciesDetected(frequencies);
+                });
+            }
+
+            /**
+             * Handle sync button click
+             */
+            async handleSyncClick() {
+                const currentState = this.syncController.getSyncState();
+                
+                if (currentState === 'idle' || currentState === 'error' || currentState === 'detected') {
+                    await this.startReceiverSync();
+                } else if (currentState === 'listening') {
+                    this.stopReceiverSync();
+                }
+            }
+
+            /**
+             * Start receiver sync listening
+             */
+            async startReceiverSync() {
+                if (this.isSyncing || this.isReceiving) {
+                    return;
+                }
+                
+                try {
+                    this.isSyncing = true;
+                    
+                    // Lock mode switching
+                    this.modeController.lockMode();
+                    
+                    // Request microphone permission if not already granted
+                    if (!this.audioRecorder.hasPermissionGranted()) {
+                        try {
+                            await this.audioRecorder.requestPermission();
+                        } catch (permError) {
+                            // Handle permission denied
+                            throw new Error('Microphone permission denied. Please allow microphone access in your browser settings and try again.');
+                        }
+                    }
+                    
+                    // Create audio context for sync
+                    this.syncAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    
+                    // Create spectrum analyzer
+                    this.syncAnalyzer = new SpectrumAnalyzer(this.syncAudioContext, 8192);
+                    
+                    // Create frequency detector
+                    this.syncDetector = new SyncFrequencyDetector();
+                    
+                    // Connect to microphone
+                    const stream = this.audioRecorder.mediaStream;
+                    if (!stream) {
+                        throw new Error('No microphone stream available. Please ensure microphone access is granted.');
+                    }
+                    
+                    const sourceNode = this.syncAudioContext.createMediaStreamSource(stream);
+                    this.syncAnalyzer.connect(sourceNode);
+                    
+                    // Start sync state
+                    await this.syncController.startReceiverSync();
+                    
+                    // Start periodic spectrum analysis (every 100ms)
+                    this.syncInterval = setInterval(() => {
+                        this.analyzeSpectrum();
+                    }, 100);
+                    
+                    // Set 30-second timeout
+                    this.syncTimeout = setTimeout(() => {
+                        if (this.isSyncing) {
+                            this.handleSyncTimeout();
+                        }
+                    }, 30000);
+                    
+                    // Update UI
+                    this.syncUIManager.updateSyncStatus('listening', '🎧 Listening for calibration signal...');
+                    
+                } catch (error) {
+                    this.handleSyncError(error);
+                }
+            }
+
+            /**
+             * Handle sync timeout
+             */
+            handleSyncTimeout() {
+                this.syncUIManager.showSyncError({
+                    type: 'timeout',
+                    message: 'Sync timeout: No calibration signal detected within 30 seconds. Please ensure the emitter is transmitting and devices are close enough.'
+                });
+                this.stopReceiverSync();
+            }
+
+            /**
+             * Handle sync errors
+             * @param {Error} error - The error that occurred
+             */
+            handleSyncError(error) {
+                let errorMessage = error.message || 'An unknown error occurred';
+                let suggestions = [];
+                
+                // Determine error type and provide suggestions
+                if (error.message.includes('permission') || error.message.includes('denied')) {
+                    suggestions.push('Allow microphone access in your browser settings');
+                    suggestions.push('Reload the page and try again');
+                } else if (error.message.includes('microphone') || error.message.includes('stream')) {
+                    suggestions.push('Check that your microphone is connected');
+                    suggestions.push('Ensure no other application is using the microphone');
+                } else {
+                    suggestions.push('Try refreshing the page');
+                    suggestions.push('Ensure your browser supports Web Audio API');
+                }
+                
+                this.syncUIManager.showSyncError({
+                    type: 'error',
+                    message: errorMessage,
+                    suggestions: suggestions
+                });
+                
+                this.isSyncing = false;
+                this.modeController.unlockMode();
+                
+                // Clean up
+                if (this.syncInterval) {
+                    clearInterval(this.syncInterval);
+                    this.syncInterval = null;
+                }
+                if (this.syncTimeout) {
+                    clearTimeout(this.syncTimeout);
+                    this.syncTimeout = null;
+                }
+            }
+
+            /**
+             * Stop receiver sync listening
+             */
+            stopReceiverSync() {
+                if (!this.isSyncing) {
+                    return;
+                }
+                
+                // Clear intervals and timeouts
+                if (this.syncInterval) {
+                    clearInterval(this.syncInterval);
+                    this.syncInterval = null;
+                }
+                
+                if (this.syncTimeout) {
+                    clearTimeout(this.syncTimeout);
+                    this.syncTimeout = null;
+                }
+                
+                // Disconnect analyzer
+                if (this.syncAnalyzer) {
+                    this.syncAnalyzer.disconnect();
+                    this.syncAnalyzer = null;
+                }
+                
+                // Close audio context
+                if (this.syncAudioContext) {
+                    this.syncAudioContext.close();
+                    this.syncAudioContext = null;
+                }
+                
+                // Stop sync state
+                this.syncController.stopReceiverSync();
+                
+                this.isSyncing = false;
+                
+                // Unlock mode switching
+                this.modeController.unlockMode();
+            }
+
+            /**
+             * Analyze spectrum for calibration frequencies
+             */
+            analyzeSpectrum() {
+                if (!this.syncAnalyzer || !this.syncDetector) {
+                    return;
+                }
+                
+                try {
+                    // Get frequency data
+                    const spectrumData = this.syncAnalyzer.getFrequencyData();
+                    
+                    // Visualize spectrum
+                    this.syncUIManager.displayFrequencySpectrum(spectrumData, this.syncAnalyzer);
+                    
+                    // Detect peaks in 4-8 kHz range
+                    const peaks = this.syncDetector.detectPeaks(spectrumData, 4000, 8000, this.syncAnalyzer);
+                    
+                    // Highlight peaks
+                    if (peaks.length > 0) {
+                        this.syncUIManager.highlightDetectedPeaks(peaks, this.syncAnalyzer);
+                    }
+                    
+                    // Try to identify calibration frequencies
+                    const frequencies = this.syncDetector.identifyCalibrationFrequencies(peaks);
+                    
+                    if (frequencies) {
+                        // Validate frequency separation
+                        const isValid = this.syncDetector.validateFrequencies([
+                            {frequency: frequencies.bit0},
+                            {frequency: frequencies.preamble},
+                            {frequency: frequencies.bit1}
+                        ]);
+                        
+                        if (!isValid) {
+                            // Frequencies too close together
+                            this.syncUIManager.updateSyncStatus('listening', 
+                                '⚠ Detected frequencies too close together (< 500 Hz). Continuing to listen...');
+                            return;
+                        }
+                        
+                        if (frequencies.confidence > 0.7) {
+                            // Successful detection with good confidence
+                            this.syncController.onFrequenciesDetected(frequencies);
+                        } else {
+                            // Low confidence, keep listening
+                            this.syncUIManager.updateSyncStatus('listening', 
+                                `🎧 Analyzing signal... (confidence: ${Math.round(frequencies.confidence * 100)}%)`);
+                        }
+                    }
+                    
+                    // Check for low signal
+                    const avgMagnitude = peaks.length > 0 ? 
+                        peaks.reduce((sum, p) => sum + p.magnitude, 0) / peaks.length : -80;
+                    
+                    if (avgMagnitude < -60 && peaks.length < 3) {
+                        this.syncUIManager.updateSyncStatus('listening', 
+                            '⚠ Low signal level. Please increase volume or move devices closer.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error analyzing spectrum:', error);
+                    // Don't stop sync on analysis errors, just log them
+                }
+            }
+
+            /**
+             * Handle detected frequencies
+             * @param {Object} frequencies - Detected frequencies
+             */
+            handleFrequenciesDetected(frequencies) {
+                try {
+                    // Save previous configuration in case we need to restore it
+                    const previousConfig = this.decoderConfigurator.getActiveFrequencies();
+                    
+                    // Stop sync listening
+                    this.stopReceiverSync();
+                    
+                    // Update decoder with new frequencies
+                    this.decoderConfigurator.updateFrequencies(this.audioDecoder, frequencies);
+                    
+                    // Display frequencies in UI
+                    this.syncUIManager.displayDetectedFrequencies(frequencies);
+                    
+                    // Show success message
+                    this.syncUIManager.showSyncSuccess();
+                    
+                } catch (error) {
+                    console.error('Error handling detected frequencies:', error);
+                    this.syncUIManager.showSyncError({
+                        type: 'configuration',
+                        message: 'Failed to apply detected frequencies. Previous configuration preserved.'
+                    });
+                    // Previous configuration is automatically preserved since update failed
+                }
+            }
+
+            /**
+             * Handle sync state changes
+             * @param {string} newState - New sync state
+             * @param {string} oldState - Previous sync state
+             */
+            handleSyncStateChange(newState, oldState) {
+                // Update UI button state
+                this.syncUIManager.updateSyncButtonState(newState);
             }
 
             /**
