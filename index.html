@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -184,7 +185,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .listening-text {
@@ -383,10 +386,13 @@
 
         /* Pulse animation for listening indicator */
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 transform: scale(1);
             }
+
             50% {
                 opacity: 0.7;
                 transform: scale(1.05);
@@ -407,6 +413,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -695,6 +702,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -785,6 +793,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>🎵 Web Audio File Transfer</h1>
@@ -872,10 +881,10 @@
                 <div class="sync-status" id="receiverSyncStatus">
                     Ready to detect calibration signal
                 </div>
-                
+
                 <!-- Spectrum Visualization Canvas -->
                 <canvas class="spectrum-canvas" id="spectrumCanvas" width="600" height="120"></canvas>
-                
+
                 <!-- Frequency Display -->
                 <div class="frequency-display" id="frequencyDisplay">
                     <div class="frequency-display-title">Detected Frequencies</div>
@@ -903,7 +912,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="sync-help-text">
                     Click to listen for calibration tones and automatically detect frequencies
                 </div>
@@ -948,7 +957,7 @@
     <script>
         // Application will be implemented in subsequent tasks
         // This script section provides the structure for future implementation
-        
+
         // Mode Controller placeholder
         class ModeController {
             constructor() {
@@ -973,24 +982,24 @@
 
             setMode(mode) {
                 this.currentMode = mode;
-                
+
                 // Update button states
                 const emitterBtn = document.getElementById('emitterBtn');
                 const receiverBtn = document.getElementById('receiverBtn');
-                
+
                 emitterBtn.classList.remove('active');
                 receiverBtn.classList.remove('active');
-                
+
                 if (mode === 'emitter') {
                     emitterBtn.classList.add('active');
                 } else if (mode === 'receiver') {
                     receiverBtn.classList.add('active');
                 }
-                
+
                 // Show/hide mode content
                 document.getElementById('emitterMode').classList.remove('active');
                 document.getElementById('receiverMode').classList.remove('active');
-                
+
                 if (mode === 'emitter') {
                     document.getElementById('emitterMode').classList.add('active');
                 } else if (mode === 'receiver') {
@@ -1022,7 +1031,7 @@
                 this.state = 'idle';
                 this.stateChangeCallbacks = [];
                 this.frequenciesDetectedCallbacks = [];
-                
+
                 // References to other components (set later)
                 this.calibrationGenerator = null;
                 this.spectrumAnalyzer = null;
@@ -1037,9 +1046,9 @@
                 if (this.state === 'transmitting') {
                     return; // Already transmitting
                 }
-                
+
                 this.setState('transmitting');
-                
+
                 // Start calibration signal generation
                 if (this.calibrationGenerator) {
                     this.calibrationGenerator.start();
@@ -1053,12 +1062,12 @@
                 if (this.state !== 'transmitting') {
                     return;
                 }
-                
+
                 // Stop calibration signal generation
                 if (this.calibrationGenerator) {
                     this.calibrationGenerator.stop();
                 }
-                
+
                 this.setState('idle');
             }
 
@@ -1070,9 +1079,9 @@
                 if (this.state === 'listening') {
                     return; // Already listening
                 }
-                
+
                 this.setState('listening');
-                
+
                 // Start spectrum analysis
                 if (this.spectrumAnalyzer && this.frequencyDetector) {
                     // Spectrum analysis will be handled by the receiver controller
@@ -1087,12 +1096,12 @@
                 if (this.state !== 'listening' && this.state !== 'detected') {
                     return;
                 }
-                
+
                 // Stop spectrum analysis
                 if (this.spectrumAnalyzer) {
                     this.spectrumAnalyzer.disconnect();
                 }
-                
+
                 this.setState('idle');
             }
 
@@ -1102,7 +1111,7 @@
              */
             onFrequenciesDetected(frequencies) {
                 this.setState('detected');
-                
+
                 // Notify all callbacks
                 for (const callback of this.frequenciesDetectedCallbacks) {
                     try {
@@ -1136,7 +1145,7 @@
             setState(newState) {
                 const oldState = this.state;
                 this.state = newState;
-                
+
                 // Notify all state change callbacks
                 for (const callback of this.stateChangeCallbacks) {
                     try {
@@ -1206,16 +1215,16 @@
                 this.audioContext = null;
                 this.sourceNode = null;
                 this.isTransmitting = false;
-                
+
                 // Frequencies (Hz)
                 this.freqPreamble = 5500;
                 this.freq0 = 4500;
                 this.freq1 = 6500;
-                
+
                 // Timing (seconds)
                 this.toneDuration = 2.0;  // 2000ms
                 this.silenceDuration = 0.5;  // 500ms
-                
+
                 this.sampleRate = 48000;
             }
 
@@ -1226,7 +1235,7 @@
                 if (this.isTransmitting) {
                     return;
                 }
-                
+
                 this.isTransmitting = true;
                 this.playCalibrationSequence();
             }
@@ -1236,7 +1245,7 @@
              */
             stop() {
                 this.isTransmitting = false;
-                
+
                 if (this.sourceNode) {
                     try {
                         this.sourceNode.stop();
@@ -1245,7 +1254,7 @@
                     }
                     this.sourceNode = null;
                 }
-                
+
                 if (this.audioContext) {
                     this.audioContext.close();
                     this.audioContext = null;
@@ -1259,7 +1268,7 @@
                 if (!this.isTransmitting) {
                     return;
                 }
-                
+
                 try {
                     // Create audio context if needed
                     if (!this.audioContext) {
@@ -1267,21 +1276,21 @@
                             sampleRate: this.sampleRate
                         });
                     }
-                    
+
                     // Resume if suspended
                     if (this.audioContext.state === 'suspended') {
                         await this.audioContext.resume();
                     }
-                    
+
                     // Generate calibration sequence
                     const audioBuffer = this.generateCalibrationSequence();
-                    
+
                     // Create source node
                     this.sourceNode = this.audioContext.createBufferSource();
                     this.sourceNode.buffer = audioBuffer;
                     this.sourceNode.loop = true;  // Loop continuously
                     this.sourceNode.connect(this.audioContext.destination);
-                    
+
                     // Handle end (shouldn't happen with loop=true, but just in case)
                     this.sourceNode.onended = () => {
                         if (this.isTransmitting) {
@@ -1289,10 +1298,10 @@
                             this.playCalibrationSequence();
                         }
                     };
-                    
+
                     // Start playback
                     this.sourceNode.start(0);
-                    
+
                 } catch (error) {
                     console.error('Error playing calibration sequence:', error);
                     this.isTransmitting = false;
@@ -1304,47 +1313,30 @@
              * @returns {AudioBuffer} The calibration sequence
              */
             generateCalibrationSequence() {
-                // Sequence: Preamble -> Silence -> Bit0 -> Silence -> Bit1 -> Silence
-                const preambleTone = this.generateTone(this.freqPreamble, this.toneDuration);
-                const bit0Tone = this.generateTone(this.freq0, this.toneDuration);
-                const bit1Tone = this.generateTone(this.freq1, this.toneDuration);
-                const silence = this.generateSilence(this.silenceDuration);
-                
-                // Calculate total length
-                const totalLength = preambleTone.length + silence.length +
-                                  bit0Tone.length + silence.length +
-                                  bit1Tone.length + silence.length;
-                
-                // Create audio buffer
-                const audioBuffer = this.audioContext.createBuffer(1, totalLength, this.sampleRate);
+                // Generate simultaneous tones (polyphonic)
+                // We need all three frequencies present at the same time for the receiver to detect them
+                // and validate their separation
+
+                const duration = 5.0; // 5 seconds of calibration signal
+                const samples = Math.floor(this.sampleRate * duration);
+                const audioBuffer = this.audioContext.createBuffer(1, samples, this.sampleRate);
                 const channelData = audioBuffer.getChannelData(0);
-                
-                // Assemble sequence
-                let offset = 0;
-                
-                // Preamble tone
-                channelData.set(preambleTone, offset);
-                offset += preambleTone.length;
-                
-                // Silence
-                channelData.set(silence, offset);
-                offset += silence.length;
-                
-                // Bit 0 tone
-                channelData.set(bit0Tone, offset);
-                offset += bit0Tone.length;
-                
-                // Silence
-                channelData.set(silence, offset);
-                offset += silence.length;
-                
-                // Bit 1 tone
-                channelData.set(bit1Tone, offset);
-                offset += bit1Tone.length;
-                
-                // Silence
-                channelData.set(silence, offset);
-                
+
+                // Amplitude for each tone (reduced to avoid clipping when summed)
+                const amplitude = 0.3;
+
+                for (let i = 0; i < samples; i++) {
+                    const t = i / this.sampleRate;
+
+                    // Mix the three frequencies
+                    const valPreamble = Math.sin(2 * Math.PI * this.freqPreamble * t);
+                    const val0 = Math.sin(2 * Math.PI * this.freq0 * t);
+                    const val1 = Math.sin(2 * Math.PI * this.freq1 * t);
+
+                    // Sum and scale
+                    channelData[i] = (valPreamble + val0 + val1) * amplitude;
+                }
+
                 return audioBuffer;
             }
 
@@ -1357,12 +1349,12 @@
             generateTone(frequency, duration) {
                 const samples = Math.floor(this.sampleRate * duration);
                 const tone = new Float32Array(samples);
-                
+
                 for (let i = 0; i < samples; i++) {
                     const t = i / this.sampleRate;
                     tone[i] = Math.sin(2 * Math.PI * frequency * t) * 0.5;
                 }
-                
+
                 return tone;
             }
 
@@ -1403,18 +1395,18 @@
                 if (this.isConnected) {
                     this.disconnect();
                 }
-                
+
                 // Create analyser node
                 this.analyser = this.audioContext.createAnalyser();
                 this.analyser.fftSize = this.fftSize;
                 this.analyser.smoothingTimeConstant = 0.8;
-                
+
                 // Allocate frequency data array
                 this.frequencyData = new Float32Array(this.analyser.frequencyBinCount);
-                
+
                 // Connect source to analyser
                 sourceNode.connect(this.analyser);
-                
+
                 this.isConnected = true;
             }
 
@@ -1438,7 +1430,7 @@
                 if (!this.analyser || !this.frequencyData) {
                     return new Float32Array(0);
                 }
-                
+
                 this.analyser.getFloatFrequencyData(this.frequencyData);
                 return this.frequencyData;
             }
@@ -1451,10 +1443,10 @@
              */
             getFrequencyRange(minFreq, maxFreq) {
                 const fullData = this.getFrequencyData();
-                
+
                 const minIndex = this.frequencyToIndex(minFreq);
                 const maxIndex = this.frequencyToIndex(maxFreq);
-                
+
                 return fullData.slice(minIndex, maxIndex + 1);
             }
 
@@ -1487,7 +1479,7 @@
                 if (!this.analyser) {
                     return [];
                 }
-                
+
                 const bins = [];
                 for (let i = 0; i < this.analyser.frequencyBinCount; i++) {
                     bins.push(i);
@@ -1521,16 +1513,16 @@
              */
             detectPeaks(spectrumData, minFreq, maxFreq, analyzer) {
                 const peaks = [];
-                
+
                 const minIndex = analyzer.frequencyToIndex(minFreq);
                 const maxIndex = analyzer.frequencyToIndex(maxFreq);
-                
+
                 // Find local maxima
                 for (let i = minIndex + 1; i < maxIndex - 1; i++) {
                     const current = spectrumData[i];
                     const prev = spectrumData[i - 1];
                     const next = spectrumData[i + 1];
-                    
+
                     // Check if local maximum and above threshold
                     if (current > prev && current > next && current > this.magnitudeThreshold) {
                         peaks.push({
@@ -1540,10 +1532,10 @@
                         });
                     }
                 }
-                
+
                 // Sort by magnitude (strongest first)
                 peaks.sort((a, b) => b.magnitude - a.magnitude);
-                
+
                 return peaks;
             }
 
@@ -1556,18 +1548,18 @@
                 if (peaks.length < 3) {
                     return null;
                 }
-                
+
                 // Take top 3 peaks
                 const top3 = peaks.slice(0, 3);
-                
+
                 // Validate frequency separation
                 if (!this.validateFrequencies(top3)) {
                     return null;
                 }
-                
+
                 // Sort by frequency (ascending)
                 top3.sort((a, b) => a.frequency - b.frequency);
-                
+
                 // Classify: lowest = bit0, middle = preamble, highest = bit1
                 const result = {
                     bit0: Math.round(top3[0].frequency),
@@ -1575,7 +1567,7 @@
                     bit1: Math.round(top3[2].frequency),
                     confidence: this.calculateConfidence(top3)
                 };
-                
+
                 return result;
             }
 
@@ -1606,16 +1598,16 @@
                 if (peaks.length < 3) {
                     return 0;
                 }
-                
+
                 // Calculate average magnitude
                 const avgMagnitude = peaks.reduce((sum, p) => sum + p.magnitude, 0) / peaks.length;
-                
+
                 // Estimate noise floor (assume -60 dB)
                 const noiseFloor = -60;
-                
+
                 // Peak strength component (0-1)
                 const peakStrength = Math.min(1, (avgMagnitude - noiseFloor) / 40);
-                
+
                 // Separation component (0-1)
                 const separations = [];
                 for (let i = 0; i < peaks.length; i++) {
@@ -1625,10 +1617,10 @@
                 }
                 const minSep = Math.min(...separations);
                 const separationScore = Math.min(1, minSep / this.minSeparation);
-                
+
                 // Weighted combination
                 const confidence = (peakStrength * 0.6) + (separationScore * 0.4);
-                
+
                 return confidence;
             }
 
@@ -1669,11 +1661,11 @@
                     decoder.frequencyDetector.freq0 = frequencies.bit0;
                     decoder.frequencyDetector.freq1 = frequencies.bit1;
                     decoder.frequencyDetector.freqPreamble = frequencies.preamble;
-                    
+
                     // Recreate Goertzel filters with new frequencies
                     const sampleRate = decoder.frequencyDetector.sampleRate;
                     const windowSize = decoder.frequencyDetector.windowSize;
-                    
+
                     decoder.frequencyDetector.filter0 = new GoertzelFilter(
                         frequencies.bit0, sampleRate, windowSize
                     );
@@ -1684,7 +1676,7 @@
                         frequencies.preamble, sampleRate, windowSize
                     );
                 }
-                
+
                 // Update active frequencies
                 this.activeFrequencies = {
                     preamble: frequencies.preamble,
@@ -1692,7 +1684,7 @@
                     bit1: frequencies.bit1,
                     source: 'detected'
                 };
-                
+
                 // Persist to session storage
                 this.persistFrequencies(frequencies);
             }
@@ -1741,7 +1733,7 @@
                     bit1: 6500,
                     source: 'default'
                 };
-                
+
                 // Clear session storage
                 try {
                     sessionStorage.removeItem(this.storageKey);
@@ -1763,11 +1755,11 @@
         class SyncUIManager {
             constructor(mode) {
                 this.mode = mode;  // 'emitter' or 'receiver'
-                
+
                 // Get UI elements
                 this.syncBtn = document.getElementById(`${mode}SyncBtn`);
                 this.syncStatus = document.getElementById(`${mode}SyncStatus`);
-                
+
                 if (mode === 'receiver') {
                     this.spectrumCanvas = document.getElementById('spectrumCanvas');
                     this.spectrumCtx = this.spectrumCanvas ? this.spectrumCanvas.getContext('2d') : null;
@@ -1802,35 +1794,35 @@
              */
             updateSyncButtonState(state) {
                 if (!this.syncBtn) return;
-                
+
                 switch (state) {
                     case 'idle':
-                        this.syncBtn.textContent = this.mode === 'emitter' ? 
+                        this.syncBtn.textContent = this.mode === 'emitter' ?
                             'Start Sync Transmission' : 'Start Sync Listening';
                         this.syncBtn.classList.remove('active');
                         this.syncBtn.disabled = false;
                         break;
-                    
+
                     case 'transmitting':
                         this.syncBtn.textContent = 'Stop Sync Transmission';
                         this.syncBtn.classList.add('active');
                         this.syncBtn.disabled = false;
                         break;
-                    
+
                     case 'listening':
                         this.syncBtn.textContent = 'Stop Sync Listening';
                         this.syncBtn.classList.add('active');
                         this.syncBtn.disabled = false;
                         break;
-                    
+
                     case 'detected':
                         this.syncBtn.textContent = 'Start Sync Listening';
                         this.syncBtn.classList.remove('active');
                         this.syncBtn.disabled = false;
                         break;
-                    
+
                     case 'error':
-                        this.syncBtn.textContent = this.mode === 'emitter' ? 
+                        this.syncBtn.textContent = this.mode === 'emitter' ?
                             'Start Sync Transmission' : 'Start Sync Listening';
                         this.syncBtn.classList.remove('active');
                         this.syncBtn.disabled = false;
@@ -1847,47 +1839,47 @@
                 if (!this.spectrumCanvas || !this.spectrumCtx || this.mode !== 'receiver') {
                     return;
                 }
-                
+
                 // Show canvas
                 this.spectrumCanvas.classList.add('active');
-                
+
                 const width = this.spectrumCanvas.width;
                 const height = this.spectrumCanvas.height;
                 const ctx = this.spectrumCtx;
-                
+
                 // Clear canvas
                 ctx.fillStyle = '#1a1a1a';
                 ctx.fillRect(0, 0, width, height);
-                
+
                 // Draw spectrum (4-8 kHz range)
                 const minFreq = 4000;
                 const maxFreq = 8000;
                 const minIndex = analyzer.frequencyToIndex(minFreq);
                 const maxIndex = analyzer.frequencyToIndex(maxFreq);
                 const rangeData = spectrumData.slice(minIndex, maxIndex + 1);
-                
+
                 // Normalize data for display
                 const minDb = -80;
                 const maxDb = -20;
-                
+
                 ctx.beginPath();
                 ctx.strokeStyle = '#667eea';
                 ctx.lineWidth = 2;
-                
+
                 for (let i = 0; i < rangeData.length; i++) {
                     const x = (i / rangeData.length) * width;
                     const normalized = (rangeData[i] - minDb) / (maxDb - minDb);
                     const y = height - (Math.max(0, Math.min(1, normalized)) * height);
-                    
+
                     if (i === 0) {
                         ctx.moveTo(x, y);
                     } else {
                         ctx.lineTo(x, y);
                     }
                 }
-                
+
                 ctx.stroke();
-                
+
                 // Draw frequency labels
                 ctx.fillStyle = '#999';
                 ctx.font = '10px monospace';
@@ -1905,20 +1897,20 @@
                 if (!this.spectrumCanvas || !this.spectrumCtx || this.mode !== 'receiver') {
                     return;
                 }
-                
+
                 const width = this.spectrumCanvas.width;
                 const height = this.spectrumCanvas.height;
                 const ctx = this.spectrumCtx;
-                
+
                 const minFreq = 4000;
                 const maxFreq = 8000;
-                
+
                 // Draw peak markers
                 ctx.fillStyle = '#10b981';
                 peaks.forEach(peak => {
                     if (peak.frequency >= minFreq && peak.frequency <= maxFreq) {
                         const x = ((peak.frequency - minFreq) / (maxFreq - minFreq)) * width;
-                        
+
                         // Draw vertical line
                         ctx.beginPath();
                         ctx.strokeStyle = '#10b981';
@@ -1926,7 +1918,7 @@
                         ctx.moveTo(x, 0);
                         ctx.lineTo(x, height);
                         ctx.stroke();
-                        
+
                         // Draw frequency label
                         ctx.fillStyle = '#10b981';
                         ctx.font = 'bold 11px monospace';
@@ -1941,12 +1933,12 @@
              */
             displayDetectedFrequencies(frequencies) {
                 if (this.mode !== 'receiver') return;
-                
+
                 // Show frequency display
                 if (this.frequencyDisplay) {
                     this.frequencyDisplay.classList.add('active');
                 }
-                
+
                 // Update values
                 if (this.freq0Value) {
                     this.freq0Value.textContent = frequencies.bit0;
@@ -1965,7 +1957,7 @@
              */
             showSyncError(error) {
                 if (!this.syncStatus) return;
-                
+
                 this.syncStatus.textContent = '❌ ' + error.message;
                 this.syncStatus.className = 'sync-status error active';
             }
@@ -1975,7 +1967,7 @@
              */
             showSyncSuccess() {
                 if (!this.syncStatus) return;
-                
+
                 this.syncStatus.textContent = '✓ Frequencies detected successfully!';
                 this.syncStatus.className = 'sync-status detected active';
             }
@@ -1985,7 +1977,7 @@
              */
             showLowSignalWarning() {
                 if (!this.syncStatus) return;
-                
+
                 this.syncStatus.textContent = '⚠ Low signal level. Please increase volume or move devices closer.';
                 this.syncStatus.className = 'sync-status error active';
             }
@@ -1997,7 +1989,7 @@
              */
             updateSyncStatus(state, message) {
                 if (!this.syncStatus) return;
-                
+
                 this.syncStatus.textContent = message;
                 this.syncStatus.className = `sync-status ${state} active`;
             }
@@ -2027,7 +2019,7 @@
                 const encoder = new TextEncoder();
                 const data = encoder.encode(text);
                 const checksum = this.calculateChecksum(data);
-                
+
                 return {
                     type: 'text',
                     filename: null,
@@ -2044,12 +2036,12 @@
             async prepareFile(file) {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
-                    
+
                     reader.onload = (event) => {
                         const arrayBuffer = event.target.result;
                         const data = new Uint8Array(arrayBuffer);
                         const checksum = this.calculateChecksum(data);
-                        
+
                         resolve({
                             type: 'file',
                             filename: file.name,
@@ -2057,11 +2049,11 @@
                             checksum: checksum
                         });
                     };
-                    
+
                     reader.onerror = () => {
                         reject(new Error('Failed to read file'));
                     };
-                    
+
                     reader.readAsArrayBuffer(file);
                 });
             }
@@ -2075,12 +2067,12 @@
             chunkData(data, chunkSize = this.chunkSize) {
                 const chunks = [];
                 const totalChunks = Math.ceil(data.length / chunkSize);
-                
+
                 for (let i = 0; i < totalChunks; i++) {
                     const start = i * chunkSize;
                     const end = Math.min(start + chunkSize, data.length);
                     const chunkData = data.slice(start, end);
-                    
+
                     chunks.push({
                         index: i,
                         total: totalChunks,
@@ -2088,7 +2080,7 @@
                         checksum: this.calculateChecksum(chunkData)
                     });
                 }
-                
+
                 return chunks;
             }
 
@@ -2100,23 +2092,23 @@
             reconstructData(chunks) {
                 // Sort chunks by index to ensure correct order
                 const sortedChunks = chunks.slice().sort((a, b) => a.index - b.index);
-                
+
                 // Calculate total size
                 let totalSize = 0;
                 for (const chunk of sortedChunks) {
                     totalSize += chunk.data.length;
                 }
-                
+
                 // Create result array
                 const result = new Uint8Array(totalSize);
-                
+
                 // Copy chunk data into result
                 let offset = 0;
                 for (const chunk of sortedChunks) {
                     result.set(chunk.data, offset);
                     offset += chunk.data.length;
                 }
-                
+
                 return result;
             }
 
@@ -2129,10 +2121,10 @@
                 // CRC16-CCITT polynomial: 0x1021
                 const polynomial = 0x1021;
                 let crc = 0xFFFF;
-                
+
                 for (let i = 0; i < data.length; i++) {
                     crc ^= (data[i] << 8);
-                    
+
                     for (let j = 0; j < 8; j++) {
                         if (crc & 0x8000) {
                             crc = (crc << 1) ^ polynomial;
@@ -2141,7 +2133,7 @@
                         }
                     }
                 }
-                
+
                 return crc & 0xFFFF;
             }
 
@@ -2167,7 +2159,7 @@
                 this.textInput = document.getElementById('textInput');
                 this.fileInput = document.getElementById('fileInput');
                 this.statusElement = document.getElementById('emitterStatus');
-                
+
                 this.initializeEventListeners();
             }
 
@@ -2188,18 +2180,18 @@
              */
             handleTextInput() {
                 const text = this.textInput.value.trim();
-                
+
                 if (text.length > 0) {
                     // Prepare text data
                     this.currentInput = this.dataProcessor.prepareText(text);
                     this.lastInputType = 'text';
-                    
+
                     // Clear file input to show text has priority
                     this.fileInput.value = '';
-                    
+
                     // Update send button state
                     this.updateSendButtonState();
-                    
+
                     // Clear any previous warnings
                     this.hideStatus();
                 } else {
@@ -2215,17 +2207,17 @@
              */
             async handleFileInput() {
                 const file = this.fileInput.files[0];
-                
+
                 if (file) {
                     // Check file size and warn if > 1MB
                     const fileSizeMB = file.size / (1024 * 1024);
-                    
+
                     if (fileSizeMB > 1) {
                         // Calculate estimated transmission time
                         // At 100 baud with 11 bits per byte = 9.09 bytes/second
                         const estimatedSeconds = file.size / 9.09;
                         const estimatedMinutes = Math.ceil(estimatedSeconds / 60);
-                        
+
                         this.showWarning(
                             `Warning: File size is ${fileSizeMB.toFixed(2)} MB. ` +
                             `Estimated transmission time: ~${estimatedMinutes} minutes.`
@@ -2233,15 +2225,15 @@
                     } else {
                         this.hideStatus();
                     }
-                    
+
                     try {
                         // Prepare file data
                         this.currentInput = await this.dataProcessor.prepareFile(file);
                         this.lastInputType = 'file';
-                        
+
                         // Clear text input to show file has priority
                         this.textInput.value = '';
-                        
+
                         // Update send button state
                         this.updateSendButtonState();
                     } catch (error) {
@@ -2335,47 +2327,47 @@
              */
             encode(preparedData) {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
+
                 // Chunk the data
                 const dataProcessor = new DataProcessor();
                 const chunks = dataProcessor.chunkData(preparedData.data);
-                
+
                 // Generate all parts
                 const preamble = this.generatePreamble();
                 const header = this.encodeHeader(preparedData, chunks.length);
                 const encodedChunks = chunks.map(chunk => this.encodeChunk(chunk));
                 const postamble = this.generatePostamble();
-                
+
                 // Calculate total length
                 let totalLength = preamble.length + header.length + postamble.length;
                 for (const encodedChunk of encodedChunks) {
                     totalLength += encodedChunk.length;
                 }
-                
+
                 // Create audio buffer
                 const audioBuffer = audioContext.createBuffer(1, totalLength, this.sampleRate);
                 const channelData = audioBuffer.getChannelData(0);
-                
+
                 // Assemble transmission
                 let offset = 0;
-                
+
                 // Add preamble
                 channelData.set(preamble, offset);
                 offset += preamble.length;
-                
+
                 // Add header
                 channelData.set(header, offset);
                 offset += header.length;
-                
+
                 // Add chunks
                 for (const encodedChunk of encodedChunks) {
                     channelData.set(encodedChunk, offset);
                     offset += encodedChunk.length;
                 }
-                
+
                 // Add postamble
                 channelData.set(postamble, offset);
-                
+
                 return audioBuffer;
             }
 
@@ -2387,12 +2379,12 @@
                 const duration = 5.0; // 5000ms (5 seconds)
                 const samples = Math.floor(this.sampleRate * duration);
                 const preamble = new Float32Array(samples);
-                
+
                 for (let i = 0; i < samples; i++) {
                     const t = i / this.sampleRate;
                     preamble[i] = Math.sin(2 * Math.PI * this.freqPreamble * t) * 0.5;
                 }
-                
+
                 return preamble;
             }
 
@@ -2415,43 +2407,43 @@
             encodeHeader(preparedData, totalChunks) {
                 // Build header bytes
                 const headerBytes = [];
-                
+
                 // Magic bytes (2 bytes): 0xAA 0x55
                 headerBytes.push(0xAA, 0x55);
-                
+
                 // Data type (1 byte): 0x01=text, 0x02=file
                 headerBytes.push(preparedData.type === 'text' ? 0x01 : 0x02);
-                
+
                 // Filename handling
                 let filenameBytes = [];
                 if (preparedData.filename) {
                     const encoder = new TextEncoder();
                     filenameBytes = Array.from(encoder.encode(preparedData.filename));
                 }
-                
+
                 // Filename length (1 byte)
                 headerBytes.push(filenameBytes.length);
-                
+
                 // Filename (variable length, UTF-8)
                 headerBytes.push(...filenameBytes);
-                
+
                 // Total chunks (2 bytes, big-endian)
                 headerBytes.push((totalChunks >> 8) & 0xFF);
                 headerBytes.push(totalChunks & 0xFF);
-                
+
                 // Total data size (4 bytes, big-endian)
                 const dataSize = preparedData.data.length;
                 headerBytes.push((dataSize >> 24) & 0xFF);
                 headerBytes.push((dataSize >> 16) & 0xFF);
                 headerBytes.push((dataSize >> 8) & 0xFF);
                 headerBytes.push(dataSize & 0xFF);
-                
+
                 // Header checksum (2 bytes)
                 const dataProcessor = new DataProcessor();
                 const headerChecksum = dataProcessor.calculateChecksum(new Uint8Array(headerBytes));
                 headerBytes.push((headerChecksum >> 8) & 0xFF);
                 headerBytes.push(headerChecksum & 0xFF);
-                
+
                 // Encode header bytes to audio
                 return this.encodeBytes(new Uint8Array(headerBytes));
             }
@@ -2463,21 +2455,21 @@
              */
             encodeChunk(chunk) {
                 const chunkBytes = [];
-                
+
                 // Chunk index (2 bytes, big-endian)
                 chunkBytes.push((chunk.index >> 8) & 0xFF);
                 chunkBytes.push(chunk.index & 0xFF);
-                
+
                 // Data length (1 byte)
                 chunkBytes.push(chunk.data.length);
-                
+
                 // Data (variable length)
                 chunkBytes.push(...Array.from(chunk.data));
-                
+
                 // Chunk checksum (2 bytes)
                 chunkBytes.push((chunk.checksum >> 8) & 0xFF);
                 chunkBytes.push(chunk.checksum & 0xFF);
-                
+
                 // Encode chunk bytes to audio
                 return this.encodeBytes(new Uint8Array(chunkBytes));
             }
@@ -2489,14 +2481,14 @@
              */
             encodeBytes(bytes) {
                 const encodedBits = [];
-                
+
                 // Encode each byte with framing
                 for (let i = 0; i < bytes.length; i++) {
                     const byte = bytes[i];
-                    
+
                     // Start bit (0)
                     encodedBits.push(0);
-                    
+
                     // 8 data bits (LSB first)
                     let onesCount = 0;
                     for (let bit = 0; bit < 8; bit++) {
@@ -2504,15 +2496,15 @@
                         encodedBits.push(bitValue);
                         if (bitValue === 1) onesCount++;
                     }
-                    
+
                     // Parity bit (even parity)
                     const parityBit = onesCount % 2;
                     encodedBits.push(parityBit);
-                    
+
                     // Stop bit (1)
                     encodedBits.push(1);
                 }
-                
+
                 // Convert bits to FSK audio
                 return this.encodeBitsToFSK(encodedBits);
             }
@@ -2525,12 +2517,12 @@
             encodeBitsToFSK(bits) {
                 const totalSamples = bits.length * this.bitDuration;
                 const audio = new Float32Array(totalSamples);
-                
+
                 for (let i = 0; i < bits.length; i++) {
                     const bit = bits[i];
                     const frequency = bit === 0 ? this.freq0 : this.freq1;
                     const startSample = i * this.bitDuration;
-                    
+
                     // Generate tone for this bit
                     for (let j = 0; j < this.bitDuration; j++) {
                         const sampleIndex = startSample + j;
@@ -2538,7 +2530,7 @@
                         audio[sampleIndex] = Math.sin(2 * Math.PI * frequency * t) * 0.5;
                     }
                 }
-                
+
                 return audio;
             }
         }
@@ -2601,7 +2593,7 @@
 
                         // Start progress tracking
                         this.startProgressTracking();
-                        
+
                         // Notify that playback has started (for visualization setup)
                         // Small delay to ensure source node is fully initialized
                         setTimeout(() => {
@@ -2765,7 +2757,7 @@
              */
             getProgress() {
                 const percentage = this.total > 0 ? (this.current / this.total) * 100 : 0;
-                
+
                 return {
                     current: this.current,
                     total: this.total,
@@ -2806,7 +2798,7 @@
              */
             notifyUpdate() {
                 const progressInfo = this.getProgress();
-                
+
                 for (const callback of this.updateCallbacks) {
                     try {
                         callback(progressInfo);
@@ -2823,26 +2815,26 @@
              */
             updateUI(mode, progressInfo) {
                 const prefix = mode === 'emitter' ? 'emitter' : 'receiver';
-                
+
                 // Get UI elements
                 const progressContainer = document.getElementById(`${prefix}Progress`);
                 const percentageElement = document.getElementById(`${prefix}Percentage`);
                 const progressBar = document.getElementById(`${prefix}ProgressBar`);
                 const detailsElement = document.getElementById(`${prefix}Details`);
-                
+
                 if (!progressContainer || !percentageElement || !progressBar || !detailsElement) {
                     return;
                 }
-                
+
                 // Show progress container
                 progressContainer.classList.add('active');
-                
+
                 // Update percentage display
                 percentageElement.textContent = `${Math.round(progressInfo.percentage)}%`;
-                
+
                 // Update progress bar width
                 progressBar.style.width = `${progressInfo.percentage}%`;
-                
+
                 // Update details text
                 detailsElement.textContent = `${progressInfo.current} / ${progressInfo.total} bytes`;
             }
@@ -2854,7 +2846,7 @@
             hideUI(mode) {
                 const prefix = mode === 'emitter' ? 'emitter' : 'receiver';
                 const progressContainer = document.getElementById(`${prefix}Progress`);
-                
+
                 if (progressContainer) {
                     progressContainer.classList.remove('active');
                 }
@@ -2873,23 +2865,23 @@
                 this.canvas = document.getElementById(canvasId);
                 this.levelFill = levelFillId ? document.getElementById(levelFillId) : null;
                 this.levelPeak = levelPeakId ? document.getElementById(levelPeakId) : null;
-                
+
                 this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
                 this.isActive = false;
                 this.animationId = null;
-                
+
                 // Audio analysis
                 this.audioContext = null;
                 this.analyser = null;
                 this.dataArray = null;
                 this.bufferLength = 0;
-                
+
                 // Peak detection
                 this.peakLevel = 0;
                 this.peakDecay = 0.95;
                 this.peakHoldTime = 1000; // ms
                 this.lastPeakTime = 0;
-                
+
                 // Initialize canvas if available
                 if (this.canvas && this.ctx) {
                     this.initializeCanvas();
@@ -2918,7 +2910,7 @@
                 }
 
                 this.audioContext = audioContext;
-                
+
                 // Create analyser node if not exists
                 if (!this.analyser) {
                     this.analyser = audioContext.createAnalyser();
@@ -2953,7 +2945,7 @@
              */
             stopVisualization() {
                 this.isActive = false;
-                
+
                 if (this.animationId) {
                     cancelAnimationFrame(this.animationId);
                     this.animationId = null;
@@ -3036,7 +3028,7 @@
 
                 // Get audio level from callback
                 const level = this.getAudioLevel ? this.getAudioLevel() : 0;
-                
+
                 // Update level meter
                 this.updateLevelMeter(level);
             }
@@ -3076,11 +3068,11 @@
 
                 // Update peak indicator
                 const now = Date.now();
-                
+
                 if (level > this.peakLevel) {
                     this.peakLevel = level;
                     this.lastPeakTime = now;
-                    
+
                     if (this.levelPeak) {
                         this.levelPeak.classList.add('active');
                     }
@@ -3088,7 +3080,7 @@
                     // Decay peak
                     if (now - this.lastPeakTime > this.peakHoldTime) {
                         this.peakLevel *= this.peakDecay;
-                        
+
                         if (this.peakLevel < 0.01) {
                             this.peakLevel = 0;
                             if (this.levelPeak) {
@@ -3131,22 +3123,22 @@
                 this.progressTracker = new ProgressTracker();
                 this.audioVisualizer = new AudioVisualizer('emitterWaveform');
                 this.isTransmitting = false;
-                
+
                 this.sendButton = document.getElementById('sendBtn');
                 this.statusElement = document.getElementById('emitterStatus');
-                
+
                 // Sync components
                 this.syncController = new SyncController();
                 this.calibrationGenerator = new CalibrationSignalGenerator();
                 this.syncUIManager = new SyncUIManager('emitter');
                 this.isSyncing = false;
-                
+
                 // Connect sync components
                 this.syncController.setCalibrationGenerator(this.calibrationGenerator);
-                
+
                 // Check Web Audio API availability on initialization
                 this.checkWebAudioSupport();
-                
+
                 this.initializeEventListeners();
                 this.initializeSyncEventListeners();
             }
@@ -3176,13 +3168,13 @@
              */
             initializeSyncEventListeners() {
                 const syncBtn = document.getElementById('emitterSyncBtn');
-                
+
                 if (syncBtn) {
                     syncBtn.addEventListener('click', () => {
                         this.handleSyncClick();
                     });
                 }
-                
+
                 // Listen for sync state changes
                 this.syncController.onStateChange((newState, oldState) => {
                     this.handleSyncStateChange(newState, oldState);
@@ -3194,7 +3186,7 @@
              */
             handleSyncClick() {
                 const currentState = this.syncController.getSyncState();
-                
+
                 if (currentState === 'idle' || currentState === 'error') {
                     this.startEmitterSync();
                 } else if (currentState === 'transmitting') {
@@ -3209,20 +3201,20 @@
                 if (this.isSyncing || this.isTransmitting) {
                     return;
                 }
-                
+
                 this.isSyncing = true;
-                
+
                 // Lock mode switching
                 this.modeController.lockMode();
-                
+
                 // Disable normal transmission controls
                 this.sendButton.disabled = true;
                 this.inputHandler.textInput.disabled = true;
                 this.inputHandler.fileInput.disabled = true;
-                
+
                 // Start sync transmission
                 this.syncController.startEmitterSync();
-                
+
                 // Update UI
                 this.syncUIManager.updateSyncStatus('transmitting', '📡 Transmitting calibration signal...');
             }
@@ -3234,20 +3226,20 @@
                 if (!this.isSyncing) {
                     return;
                 }
-                
+
                 // Stop sync transmission
                 this.syncController.stopEmitterSync();
-                
+
                 this.isSyncing = false;
-                
+
                 // Unlock mode switching
                 this.modeController.unlockMode();
-                
+
                 // Restore normal transmission controls
                 this.inputHandler.updateSendButtonState();
                 this.inputHandler.textInput.disabled = false;
                 this.inputHandler.fileInput.disabled = false;
-                
+
                 // Update UI
                 this.syncUIManager.updateSyncStatus('idle', 'Ready to transmit calibration signal');
             }
@@ -3260,19 +3252,19 @@
             handleSyncStateChange(newState, oldState) {
                 // Update UI button state
                 this.syncUIManager.updateSyncButtonState(newState);
-                
+
                 // Handle state-specific logic
                 switch (newState) {
                     case 'transmitting':
                         this.syncUIManager.updateSyncStatus('transmitting', '📡 Transmitting calibration signal...');
                         break;
-                    
+
                     case 'idle':
                         if (oldState === 'transmitting') {
                             this.syncUIManager.updateSyncStatus('idle', 'Calibration transmission stopped');
                         }
                         break;
-                    
+
                     case 'error':
                         this.syncUIManager.showSyncError({
                             type: 'transmission',
@@ -3293,7 +3285,7 @@
 
                 // Get current input data
                 const preparedData = this.inputHandler.getCurrentInput();
-                
+
                 if (!preparedData || !preparedData.data || preparedData.data.length === 0) {
                     this.showError('No data to send. Please enter text or select a file.');
                     return;
@@ -3308,7 +3300,7 @@
 
                     // Set up progress tracking
                     this.setupProgressTracking(preparedData.data.length);
-                    
+
                     // Set up visualization callback
                     this.audioPlayer.onPlaybackStart(() => {
                         if (this.audioPlayer.audioContext && this.audioPlayer.sourceNode) {
@@ -3335,20 +3327,20 @@
              */
             startTransmission() {
                 this.isTransmitting = true;
-                
+
                 // Lock mode switching
                 this.modeController.lockMode();
-                
+
                 // Disable send button and add loading state
                 this.sendButton.disabled = true;
                 this.sendButton.classList.add('loading');
-                
+
                 // Clear any previous status messages
                 this.hideStatus();
-                
+
                 // Show progress container
                 this.progressTracker.hideUI('emitter');
-                
+
                 // Show audio visualizer
                 this.audioVisualizer.show();
             }
@@ -3360,18 +3352,18 @@
             setupProgressTracking(totalBytes) {
                 // Set total bytes for progress tracker
                 this.progressTracker.setTotal(totalBytes);
-                
+
                 // Clear any previous callbacks
                 this.audioPlayer.clearProgressCallbacks();
                 this.progressTracker.clearCallbacks();
-                
+
                 // Register progress callback from audio player
                 this.audioPlayer.onProgressUpdate((audioProgress) => {
                     // Convert audio progress (0-1) to bytes transmitted
                     const bytesTransmitted = Math.floor(audioProgress * totalBytes);
                     this.progressTracker.updateProgress(bytesTransmitted);
                 });
-                
+
                 // Register progress tracker callback to update UI
                 this.progressTracker.onUpdate((progressInfo) => {
                     this.progressTracker.updateUI('emitter', progressInfo);
@@ -3383,20 +3375,20 @@
              */
             completeTransmission() {
                 this.isTransmitting = false;
-                
+
                 // Unlock mode switching
                 this.modeController.unlockMode();
-                
+
                 // Re-enable send button and remove loading state
                 this.sendButton.classList.remove('loading');
                 this.inputHandler.updateSendButtonState();
-                
+
                 // Stop audio visualization
                 this.audioVisualizer.stopVisualization();
-                
+
                 // Show success notification
                 this.showSuccess('Transmission completed successfully!');
-                
+
                 // Keep progress display visible to show 100%
                 // User can see final state before starting new transmission
             }
@@ -3407,28 +3399,28 @@
              */
             handleTransmissionError(error) {
                 this.isTransmitting = false;
-                
+
                 // Unlock mode switching
                 this.modeController.unlockMode();
-                
+
                 // Re-enable send button and remove loading state
                 this.sendButton.classList.remove('loading');
                 this.inputHandler.updateSendButtonState();
-                
+
                 // Stop audio playback if still playing
                 this.audioPlayer.stop();
-                
+
                 // Stop audio visualization
                 this.audioVisualizer.stopVisualization();
                 this.audioVisualizer.hide();
-                
+
                 // Hide progress display
                 this.progressTracker.hideUI('emitter');
-                
+
                 // Show error message with clear instructions
                 let errorMessage = 'Transmission failed: ';
                 let instructions = '';
-                
+
                 if (error.name === 'NotAllowedError') {
                     errorMessage += 'Audio playback was blocked by the browser.';
                     instructions = 'Please check your browser settings and allow audio playback for this page, then try again.';
@@ -3442,7 +3434,7 @@
                     errorMessage += error.message || 'An unknown error occurred.';
                     instructions = 'Please try again. If the problem persists, try refreshing the page.';
                 }
-                
+
                 this.showError(errorMessage + ' ' + instructions);
             }
 
@@ -3493,17 +3485,17 @@
                 this.targetFrequency = targetFrequency;
                 this.sampleRate = sampleRate;
                 this.windowSize = windowSize;
-                
+
                 // Calculate Goertzel coefficient
                 // k = (int)(0.5 + ((windowSize * targetFrequency) / sampleRate))
                 const k = Math.round((windowSize * targetFrequency) / sampleRate);
-                
+
                 // omega = (2 * PI * k) / windowSize
                 const omega = (2 * Math.PI * k) / windowSize;
-                
+
                 // coefficient = 2 * cos(omega)
                 this.coefficient = 2 * Math.cos(omega);
-                
+
                 // For magnitude calculation
                 this.cosine = Math.cos(omega);
                 this.sine = Math.sin(omega);
@@ -3518,20 +3510,20 @@
                 let s0 = 0;
                 let s1 = 0;
                 let s2 = 0;
-                
+
                 // Process each sample through the Goertzel filter
                 for (let i = 0; i < samples.length; i++) {
                     s0 = samples[i] + this.coefficient * s1 - s2;
                     s2 = s1;
                     s1 = s0;
                 }
-                
+
                 // Calculate magnitude
                 // magnitude = sqrt(s1^2 + s2^2 - coefficient * s1 * s2)
                 const real = s1 - s2 * this.cosine;
                 const imag = s2 * this.sine;
                 const magnitude = Math.sqrt(real * real + imag * imag);
-                
+
                 return magnitude;
             }
 
@@ -3542,7 +3534,7 @@
              */
             processNormalized(samples) {
                 const magnitude = this.process(samples);
-                
+
                 // Normalize by window size for consistent results
                 // This gives us a value roughly proportional to signal amplitude
                 return magnitude / this.windowSize;
@@ -3559,26 +3551,26 @@
                 this.sampleRate = sampleRate;
                 this.baudRate = 100; // Bits per second
                 this.bitDuration = sampleRate / this.baudRate; // Samples per bit
-                
+
                 // Frequencies to detect
                 this.freq0 = 4500; // Bit 0 frequency
                 this.freq1 = 6500; // Bit 1 frequency
                 this.freqPreamble = 5500; // Preamble frequency
-                
+
                 // Window size for Goertzel analysis
                 // Use the bit duration as window size for optimal detection
                 this.windowSize = Math.floor(this.bitDuration);
-                
+
                 // Create Goertzel filters for each frequency
                 this.filter0 = new GoertzelFilter(this.freq0, this.sampleRate, this.windowSize);
                 this.filter1 = new GoertzelFilter(this.freq1, this.sampleRate, this.windowSize);
                 this.filterPreamble = new GoertzelFilter(this.freqPreamble, this.sampleRate, this.windowSize);
-                
+
                 // Threshold for bit decision (relative magnitude difference)
                 // If mag1 / mag0 > threshold, it's a 1 bit
                 // If mag0 / mag1 > threshold, it's a 0 bit
                 this.bitDecisionThreshold = 1.5;
-                
+
                 // Threshold for preamble detection (absolute magnitude)
                 // Preamble should have strong signal at 5500 Hz
                 this.preambleThreshold = 0.1;
@@ -3594,14 +3586,14 @@
                 if (samples.length < this.windowSize) {
                     return null;
                 }
-                
+
                 // Extract window of samples (use first windowSize samples)
                 const window = samples.slice(0, this.windowSize);
-                
+
                 // Get magnitudes at both frequencies
                 const mag0 = this.filter0.processNormalized(window);
                 const mag1 = this.filter1.processNormalized(window);
-                
+
                 // Threshold-based bit decision
                 // Compare relative magnitudes to determine which frequency is stronger
                 if (mag1 > mag0 * this.bitDecisionThreshold) {
@@ -3626,23 +3618,23 @@
                 if (samples.length < this.windowSize) {
                     return false;
                 }
-                
+
                 // Extract window of samples
                 const window = samples.slice(0, this.windowSize);
-                
+
                 // Get magnitude at preamble frequency
                 const magPreamble = this.filterPreamble.processNormalized(window);
-                
+
                 // Also check that other frequencies are not dominant
                 // (to avoid false positives from data transmission)
                 const mag0 = this.filter0.processNormalized(window);
                 const mag1 = this.filter1.processNormalized(window);
-                
+
                 // Preamble should have strong 5500 Hz signal
                 // and weaker signals at data frequencies
                 const isPreambleStrong = magPreamble > this.preambleThreshold;
                 const areDataFreqsWeak = magPreamble > mag0 * 1.2 && magPreamble > mag1 * 1.2;
-                
+
                 return isPreambleStrong && areDataFreqsWeak;
             }
 
@@ -3654,17 +3646,17 @@
             detectBitStream(samples) {
                 const bits = [];
                 const stride = this.windowSize; // Move by one bit duration each time
-                
+
                 // Process samples in windows
                 for (let i = 0; i + this.windowSize <= samples.length; i += stride) {
                     const window = samples.slice(i, i + this.windowSize);
                     const bit = this.detectBit(window);
-                    
+
                     if (bit !== null) {
                         bits.push(bit);
                     }
                 }
-                
+
                 return bits;
             }
 
@@ -3701,9 +3693,9 @@
                 if (samples.length < this.windowSize) {
                     return { mag0: 0, mag1: 0, magPreamble: 0 };
                 }
-                
+
                 const window = samples.slice(0, this.windowSize);
-                
+
                 return {
                     mag0: this.filter0.processNormalized(window),
                     mag1: this.filter1.processNormalized(window),
@@ -3722,40 +3714,40 @@
                 this.sampleRate = sampleRate;
                 this.baudRate = 100; // Bits per second
                 this.bitDuration = sampleRate / this.baudRate; // Samples per bit
-                
+
                 // Create frequency detector
                 this.frequencyDetector = new FrequencyDetector(sampleRate);
-                
+
                 // State machine for decoding
                 this.state = 'IDLE'; // States: IDLE, PREAMBLE_DETECTED, DECODING_HEADER, DECODING_CHUNKS
-                
+
                 // Buffers
                 this.audioBuffer = new Float32Array(0); // Accumulated audio samples
                 this.receivedChunks = []; // Array of decoded chunks
-                
+
                 // Header information
                 this.header = null;
                 this.expectedChunks = 0;
-                
+
                 // Callbacks
                 this.chunkReceivedCallbacks = [];
                 this.transmissionCompleteCallbacks = [];
                 this.errorCallbacks = [];
-                
+
                 // Preamble detection
                 this.preambleDetectionWindow = Math.floor(5.0 * sampleRate); // 5000ms window
                 this.preambleConfirmationCount = 0;
                 this.preambleConfirmationThreshold = 10; // Need multiple confirmations
-                
+
                 // Preamble timeout tracking (30 seconds)
                 this.preambleTimeout = 30000; // 30 seconds in milliseconds
                 this.listeningStartTime = null;
                 this.preambleTimeoutTimer = null;
-                
+
                 // Checksum error tracking
                 this.checksumErrors = 0;
                 this.maxChecksumErrors = 10; // Maximum consecutive checksum errors before giving up
-                
+
                 // Data processor for checksum verification
                 this.dataProcessor = new DataProcessor();
             }
@@ -3823,21 +3815,21 @@
             processAudioData(audioData) {
                 // Append new audio data to buffer
                 this.appendToBuffer(audioData);
-                
+
                 // Process based on current state
                 switch (this.state) {
                     case 'IDLE':
                         this.detectPreambleState();
                         break;
-                    
+
                     case 'PREAMBLE_DETECTED':
                         this.waitForPreambleEnd();
                         break;
-                    
+
                     case 'DECODING_HEADER':
                         this.decodeHeaderState();
                         break;
-                    
+
                     case 'DECODING_CHUNKS':
                         this.decodeChunksState();
                         break;
@@ -3851,25 +3843,25 @@
              */
             detectPreamble(audioData) {
                 const windowSize = this.frequencyDetector.getWindowSize();
-                
+
                 // Need at least one window of samples
                 if (audioData.length < windowSize) {
                     return false;
                 }
-                
+
                 // Check multiple windows for preamble
                 let detectionCount = 0;
                 const numWindows = Math.min(10, Math.floor(audioData.length / windowSize));
-                
+
                 for (let i = 0; i < numWindows; i++) {
                     const start = i * windowSize;
                     const window = audioData.slice(start, start + windowSize);
-                    
+
                     if (this.frequencyDetector.detectPreamble(window)) {
                         detectionCount++;
                     }
                 }
-                
+
                 // Require multiple confirmations to avoid false positives
                 return detectionCount >= Math.min(5, numWindows);
             }
@@ -3879,18 +3871,18 @@
              */
             detectPreambleState() {
                 const windowSize = this.frequencyDetector.getWindowSize();
-                
+
                 // Keep buffer size manageable while searching for preamble
                 if (this.audioBuffer.length > this.preambleDetectionWindow * 2) {
                     // Discard old samples, keep recent ones
                     this.audioBuffer = this.audioBuffer.slice(-this.preambleDetectionWindow);
                 }
-                
+
                 // Check if we have enough samples to detect preamble
                 if (this.audioBuffer.length < windowSize * 10) {
                     return;
                 }
-                
+
                 // Try to detect preamble
                 if (this.detectPreamble(this.audioBuffer)) {
                     this.state = 'PREAMBLE_DETECTED';
@@ -3906,15 +3898,15 @@
              */
             waitForPreambleEnd() {
                 const windowSize = this.frequencyDetector.getWindowSize();
-                
+
                 // Wait for enough samples to confirm preamble has ended
                 if (this.audioBuffer.length < windowSize * 5) {
                     return;
                 }
-                
+
                 // Check if preamble is still present
                 const stillPreamble = this.detectPreamble(this.audioBuffer.slice(-windowSize * 5));
-                
+
                 if (!stillPreamble) {
                     // Preamble has ended, start decoding header
                     this.state = 'DECODING_HEADER';
@@ -3928,13 +3920,13 @@
             decodeHeaderState() {
                 // Try to decode header
                 const header = this.decodeHeader(this.audioBuffer);
-                
+
                 if (header) {
                     this.header = header;
                     this.expectedChunks = header.totalChunks;
                     this.receivedChunks = [];
                     this.state = 'DECODING_CHUNKS';
-                    
+
                     // Remove decoded header samples from buffer
                     const headerBitCount = this.estimateHeaderBitCount(header);
                     const headerSampleCount = headerBitCount * this.bitDuration;
@@ -3948,7 +3940,7 @@
             decodeChunksState() {
                 // Try to decode a chunk
                 const chunk = this.decodeChunk(this.audioBuffer);
-                
+
                 if (chunk) {
                     // Verify chunk checksum
                     const chunkData = new Uint8Array([
@@ -3957,13 +3949,13 @@
                         chunk.data.length,
                         ...chunk.data
                     ]);
-                    
+
                     if (this.dataProcessor.verifyChecksum(chunkData, chunk.checksum)) {
                         // Valid chunk received - reset error counter
                         this.checksumErrors = 0;
                         this.receivedChunks.push(chunk);
                         this.notifyChunkReceived(chunk);
-                        
+
                         // Check if transmission is complete
                         if (this.receivedChunks.length >= this.expectedChunks) {
                             this.notifyTransmissionComplete();
@@ -3977,7 +3969,7 @@
                     } else {
                         // Checksum mismatch - increment error counter
                         this.checksumErrors++;
-                        
+
                         if (this.checksumErrors >= this.maxChecksumErrors) {
                             // Too many consecutive checksum errors
                             this.notifyError({
@@ -4006,43 +3998,43 @@
                 // Each byte = 11 bits (start + 8 data + parity + stop)
                 const minHeaderBits = 12 * 11;
                 const minHeaderSamples = minHeaderBits * this.bitDuration;
-                
+
                 if (audioData.length < minHeaderSamples) {
                     return null;
                 }
-                
+
                 // Decode bits from audio
                 const bits = this.frequencyDetector.detectBitStream(audioData);
-                
+
                 if (bits.length < minHeaderBits) {
                     return null;
                 }
-                
+
                 // Decode bytes from bits
                 const bytes = this.decodeBytesFromBits(bits);
-                
+
                 if (bytes.length < 12) {
                     return null;
                 }
-                
+
                 // Parse header
                 let offset = 0;
-                
+
                 // Magic bytes (2 bytes): 0xAA 0x55
                 const magic1 = bytes[offset++];
                 const magic2 = bytes[offset++];
-                
+
                 if (magic1 !== 0xAA || magic2 !== 0x55) {
                     return null; // Invalid magic bytes
                 }
-                
+
                 // Data type (1 byte): 0x01=text, 0x02=file
                 const dataType = bytes[offset++];
                 const type = dataType === 0x01 ? 'text' : 'file';
-                
+
                 // Filename length (1 byte)
                 const filenameLength = bytes[offset++];
-                
+
                 // Filename (variable length, UTF-8)
                 let filename = null;
                 if (filenameLength > 0) {
@@ -4054,35 +4046,35 @@
                     filename = decoder.decode(new Uint8Array(filenameBytes));
                     offset += filenameLength;
                 }
-                
+
                 // Total chunks (2 bytes, big-endian)
                 if (bytes.length < offset + 2) {
                     return null;
                 }
                 const totalChunks = (bytes[offset] << 8) | bytes[offset + 1];
                 offset += 2;
-                
+
                 // Total data size (4 bytes, big-endian)
                 if (bytes.length < offset + 4) {
                     return null;
                 }
-                const totalSize = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | 
-                                 (bytes[offset + 2] << 8) | bytes[offset + 3];
+                const totalSize = (bytes[offset] << 24) | (bytes[offset + 1] << 16) |
+                    (bytes[offset + 2] << 8) | bytes[offset + 3];
                 offset += 4;
-                
+
                 // Header checksum (2 bytes)
                 if (bytes.length < offset + 2) {
                     return null;
                 }
                 const headerChecksum = (bytes[offset] << 8) | bytes[offset + 1];
                 offset += 2;
-                
+
                 // Verify header checksum
                 const headerData = new Uint8Array(bytes.slice(0, offset - 2));
                 if (!this.dataProcessor.verifyChecksum(headerData, headerChecksum)) {
                     return null; // Invalid header checksum
                 }
-                
+
                 return {
                     type: type,
                     filename: filename,
@@ -4101,45 +4093,45 @@
                 // Each byte = 11 bits
                 const minChunkBits = 5 * 11;
                 const minChunkSamples = minChunkBits * this.bitDuration;
-                
+
                 if (audioData.length < minChunkSamples) {
                     return null;
                 }
-                
+
                 // Decode bits from audio
                 const bits = this.frequencyDetector.detectBitStream(audioData);
-                
+
                 if (bits.length < minChunkBits) {
                     return null;
                 }
-                
+
                 // Decode bytes from bits
                 const bytes = this.decodeBytesFromBits(bits);
-                
+
                 if (bytes.length < 5) {
                     return null;
                 }
-                
+
                 // Parse chunk
                 let offset = 0;
-                
+
                 // Chunk index (2 bytes, big-endian)
                 const chunkIndex = (bytes[offset] << 8) | bytes[offset + 1];
                 offset += 2;
-                
+
                 // Data length (1 byte)
                 const dataLength = bytes[offset++];
-                
+
                 // Data (variable length)
                 if (bytes.length < offset + dataLength + 2) {
                     return null; // Not enough data
                 }
                 const chunkData = bytes.slice(offset, offset + dataLength);
                 offset += dataLength;
-                
+
                 // Chunk checksum (2 bytes)
                 const chunkChecksum = (bytes[offset] << 8) | bytes[offset + 1];
-                
+
                 return {
                     index: chunkIndex,
                     data: new Uint8Array(chunkData),
@@ -4155,18 +4147,18 @@
             decodeBytesFromBits(bits) {
                 const bytes = [];
                 let i = 0;
-                
+
                 while (i + 11 <= bits.length) {
                     // Look for start bit (0)
                     if (bits[i] !== 0) {
                         i++;
                         continue;
                     }
-                    
+
                     // Extract 8 data bits (LSB first)
                     let byte = 0;
                     let onesCount = 0;
-                    
+
                     for (let bit = 0; bit < 8; bit++) {
                         const bitValue = bits[i + 1 + bit];
                         if (bitValue === 1) {
@@ -4174,29 +4166,29 @@
                             onesCount++;
                         }
                     }
-                    
+
                     // Check parity bit (even parity)
                     const parityBit = bits[i + 9];
                     const expectedParity = onesCount % 2;
-                    
+
                     if (parityBit !== expectedParity) {
                         // Parity error - skip this byte
                         i++;
                         continue;
                     }
-                    
+
                     // Check stop bit (1)
                     if (bits[i + 10] !== 1) {
                         // Invalid stop bit - skip
                         i++;
                         continue;
                     }
-                    
+
                     // Valid byte decoded
                     bytes.push(byte);
                     i += 11; // Move to next byte
                 }
-                
+
                 return bytes;
             }
 
@@ -4564,16 +4556,16 @@
                 this.progressTracker = new ProgressTracker();
                 this.audioVisualizer = new AudioVisualizer(null, 'receiverLevelFill', 'receiverLevelPeak');
                 this.isReceiving = false;
-                
+
                 this.statusElement = document.getElementById('receiverStatus');
                 this.dataDisplay = document.getElementById('dataDisplay');
-                
+
                 // Track received transmissions
                 this.transmissionHistory = [];
-                
+
                 // Audio level tracking for visualization
                 this.currentAudioLevel = 0;
-                
+
                 // Sync components
                 this.syncController = new SyncController();
                 this.syncUIManager = new SyncUIManager('receiver');
@@ -4584,7 +4576,7 @@
                 this.syncDetector = null;
                 this.syncInterval = null;
                 this.syncTimeout = null;
-                
+
                 this.initializeReceiverMode();
                 this.initializeSyncEventListeners();
             }
@@ -4598,38 +4590,38 @@
                     if (!window.AudioContext && !window.webkitAudioContext) {
                         throw new Error('Web Audio API is not supported in this browser');
                     }
-                    
+
                     // Check MediaDevices API support
                     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                         throw new Error('getUserMedia is not supported in this browser');
                     }
-                    
+
                     // Request microphone permission
                     await this.audioRecorder.requestPermission();
-                    
+
                     // Start recording
                     await this.audioRecorder.startRecording();
-                    
+
                     // Start decoder listening
                     this.audioDecoder.startListening();
-                    
+
                     // Connect audio recorder to decoder
                     this.audioRecorder.onAudioData((audioData) => {
                         this.audioDecoder.processAudioData(audioData);
-                        
+
                         // Update audio level for visualization
                         this.updateAudioLevel(audioData);
                     });
-                    
+
                     // Register decoder callbacks
                     this.setupDecoderCallbacks();
-                    
+
                     // Show success message
                     this.showSuccess('✓ Listening for transmission... Waiting for audio signal.');
-                    
+
                     // Start audio level visualization
                     this.audioVisualizer.startLevelMonitoring(() => this.currentAudioLevel);
-                    
+
                 } catch (error) {
                     this.handleReceiverError(error);
                 }
@@ -4646,11 +4638,11 @@
                     sum += audioData[i] * audioData[i];
                 }
                 const rms = Math.sqrt(sum / audioData.length);
-                
+
                 // Smooth the level with exponential moving average
                 const smoothing = 0.8;
                 this.currentAudioLevel = (smoothing * this.currentAudioLevel) + ((1 - smoothing) * rms);
-                
+
                 // Clamp to 0-1 range
                 this.currentAudioLevel = Math.min(Math.max(this.currentAudioLevel, 0), 1);
             }
@@ -4660,18 +4652,18 @@
              */
             initializeSyncEventListeners() {
                 const syncBtn = document.getElementById('receiverSyncBtn');
-                
+
                 if (syncBtn) {
                     syncBtn.addEventListener('click', () => {
                         this.handleSyncClick();
                     });
                 }
-                
+
                 // Listen for sync state changes
                 this.syncController.onStateChange((newState, oldState) => {
                     this.handleSyncStateChange(newState, oldState);
                 });
-                
+
                 // Listen for frequency detection
                 this.syncController.onFrequenciesDetectedCallback((frequencies) => {
                     this.handleFrequenciesDetected(frequencies);
@@ -4683,7 +4675,7 @@
              */
             async handleSyncClick() {
                 const currentState = this.syncController.getSyncState();
-                
+
                 if (currentState === 'idle' || currentState === 'error' || currentState === 'detected') {
                     await this.startReceiverSync();
                 } else if (currentState === 'listening') {
@@ -4698,13 +4690,13 @@
                 if (this.isSyncing || this.isReceiving) {
                     return;
                 }
-                
+
                 try {
                     this.isSyncing = true;
-                    
+
                     // Lock mode switching
                     this.modeController.lockMode();
-                    
+
                     // Request microphone permission if not already granted
                     if (!this.audioRecorder.hasPermissionGranted()) {
                         try {
@@ -4714,43 +4706,43 @@
                             throw new Error('Microphone permission denied. Please allow microphone access in your browser settings and try again.');
                         }
                     }
-                    
+
                     // Create audio context for sync
                     this.syncAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    
+
                     // Create spectrum analyzer
                     this.syncAnalyzer = new SpectrumAnalyzer(this.syncAudioContext, 8192);
-                    
+
                     // Create frequency detector
                     this.syncDetector = new SyncFrequencyDetector();
-                    
+
                     // Connect to microphone
                     const stream = this.audioRecorder.mediaStream;
                     if (!stream) {
                         throw new Error('No microphone stream available. Please ensure microphone access is granted.');
                     }
-                    
+
                     const sourceNode = this.syncAudioContext.createMediaStreamSource(stream);
                     this.syncAnalyzer.connect(sourceNode);
-                    
+
                     // Start sync state
                     await this.syncController.startReceiverSync();
-                    
+
                     // Start periodic spectrum analysis (every 100ms)
                     this.syncInterval = setInterval(() => {
                         this.analyzeSpectrum();
                     }, 100);
-                    
+
                     // Set 30-second timeout
                     this.syncTimeout = setTimeout(() => {
                         if (this.isSyncing) {
                             this.handleSyncTimeout();
                         }
                     }, 30000);
-                    
+
                     // Update UI
                     this.syncUIManager.updateSyncStatus('listening', '🎧 Listening for calibration signal...');
-                    
+
                 } catch (error) {
                     this.handleSyncError(error);
                 }
@@ -4774,7 +4766,7 @@
             handleSyncError(error) {
                 let errorMessage = error.message || 'An unknown error occurred';
                 let suggestions = [];
-                
+
                 // Determine error type and provide suggestions
                 if (error.message.includes('permission') || error.message.includes('denied')) {
                     suggestions.push('Allow microphone access in your browser settings');
@@ -4786,16 +4778,16 @@
                     suggestions.push('Try refreshing the page');
                     suggestions.push('Ensure your browser supports Web Audio API');
                 }
-                
+
                 this.syncUIManager.showSyncError({
                     type: 'error',
                     message: errorMessage,
                     suggestions: suggestions
                 });
-                
+
                 this.isSyncing = false;
                 this.modeController.unlockMode();
-                
+
                 // Clean up
                 if (this.syncInterval) {
                     clearInterval(this.syncInterval);
@@ -4814,35 +4806,35 @@
                 if (!this.isSyncing) {
                     return;
                 }
-                
+
                 // Clear intervals and timeouts
                 if (this.syncInterval) {
                     clearInterval(this.syncInterval);
                     this.syncInterval = null;
                 }
-                
+
                 if (this.syncTimeout) {
                     clearTimeout(this.syncTimeout);
                     this.syncTimeout = null;
                 }
-                
+
                 // Disconnect analyzer
                 if (this.syncAnalyzer) {
                     this.syncAnalyzer.disconnect();
                     this.syncAnalyzer = null;
                 }
-                
+
                 // Close audio context
                 if (this.syncAudioContext) {
                     this.syncAudioContext.close();
                     this.syncAudioContext = null;
                 }
-                
+
                 // Stop sync state
                 this.syncController.stopReceiverSync();
-                
+
                 this.isSyncing = false;
-                
+
                 // Unlock mode switching
                 this.modeController.unlockMode();
             }
@@ -4854,59 +4846,59 @@
                 if (!this.syncAnalyzer || !this.syncDetector) {
                     return;
                 }
-                
+
                 try {
                     // Get frequency data
                     const spectrumData = this.syncAnalyzer.getFrequencyData();
-                    
+
                     // Visualize spectrum
                     this.syncUIManager.displayFrequencySpectrum(spectrumData, this.syncAnalyzer);
-                    
+
                     // Detect peaks in 4-8 kHz range
                     const peaks = this.syncDetector.detectPeaks(spectrumData, 4000, 8000, this.syncAnalyzer);
-                    
+
                     // Highlight peaks
                     if (peaks.length > 0) {
                         this.syncUIManager.highlightDetectedPeaks(peaks, this.syncAnalyzer);
                     }
-                    
+
                     // Try to identify calibration frequencies
                     const frequencies = this.syncDetector.identifyCalibrationFrequencies(peaks);
-                    
+
                     if (frequencies) {
                         // Validate frequency separation
                         const isValid = this.syncDetector.validateFrequencies([
-                            {frequency: frequencies.bit0},
-                            {frequency: frequencies.preamble},
-                            {frequency: frequencies.bit1}
+                            { frequency: frequencies.bit0 },
+                            { frequency: frequencies.preamble },
+                            { frequency: frequencies.bit1 }
                         ]);
-                        
+
                         if (!isValid) {
                             // Frequencies too close together
-                            this.syncUIManager.updateSyncStatus('listening', 
+                            this.syncUIManager.updateSyncStatus('listening',
                                 '⚠ Detected frequencies too close together (< 500 Hz). Continuing to listen...');
                             return;
                         }
-                        
+
                         if (frequencies.confidence > 0.7) {
                             // Successful detection with good confidence
                             this.syncController.onFrequenciesDetected(frequencies);
                         } else {
                             // Low confidence, keep listening
-                            this.syncUIManager.updateSyncStatus('listening', 
+                            this.syncUIManager.updateSyncStatus('listening',
                                 `🎧 Analyzing signal... (confidence: ${Math.round(frequencies.confidence * 100)}%)`);
                         }
                     }
-                    
+
                     // Check for low signal
-                    const avgMagnitude = peaks.length > 0 ? 
+                    const avgMagnitude = peaks.length > 0 ?
                         peaks.reduce((sum, p) => sum + p.magnitude, 0) / peaks.length : -80;
-                    
+
                     if (avgMagnitude < -60 && peaks.length < 3) {
-                        this.syncUIManager.updateSyncStatus('listening', 
+                        this.syncUIManager.updateSyncStatus('listening',
                             '⚠ Low signal level. Please increase volume or move devices closer.');
                     }
-                    
+
                 } catch (error) {
                     console.error('Error analyzing spectrum:', error);
                     // Don't stop sync on analysis errors, just log them
@@ -4921,19 +4913,19 @@
                 try {
                     // Save previous configuration in case we need to restore it
                     const previousConfig = this.decoderConfigurator.getActiveFrequencies();
-                    
+
                     // Stop sync listening
                     this.stopReceiverSync();
-                    
+
                     // Update decoder with new frequencies
                     this.decoderConfigurator.updateFrequencies(this.audioDecoder, frequencies);
-                    
+
                     // Display frequencies in UI
                     this.syncUIManager.displayDetectedFrequencies(frequencies);
-                    
+
                     // Show success message
                     this.syncUIManager.showSyncSuccess();
-                    
+
                 } catch (error) {
                     console.error('Error handling detected frequencies:', error);
                     this.syncUIManager.showSyncError({
@@ -4962,12 +4954,12 @@
                 this.audioDecoder.onChunkReceived((chunk) => {
                     this.handleChunkReceived(chunk);
                 });
-                
+
                 // Callback for transmission complete
                 this.audioDecoder.onTransmissionComplete(() => {
                     this.handleTransmissionComplete();
                 });
-                
+
                 // Callback for decoder errors
                 this.audioDecoder.onError((error) => {
                     this.handleDecoderError(error);
@@ -4983,13 +4975,13 @@
                 if (!this.isReceiving) {
                     this.startReception();
                 }
-                
+
                 // Update progress
                 const header = this.audioDecoder.getHeader();
                 if (header) {
                     const receivedChunks = this.audioDecoder.getReceivedChunks();
                     const bytesReceived = receivedChunks.reduce((sum, c) => sum + c.data.length, 0);
-                    
+
                     // Update progress tracker
                     this.progressTracker.setTotal(header.totalSize);
                     this.progressTracker.updateProgress(bytesReceived);
@@ -5004,13 +4996,13 @@
                     // Get all received chunks
                     const chunks = this.audioDecoder.getReceivedChunks();
                     const header = this.audioDecoder.getHeader();
-                    
+
                     if (!header || chunks.length === 0) {
                         this.showError('Transmission incomplete: No data received. Please ensure the emitter is transmitting and try again.');
                         this.endReception();
                         return;
                     }
-                    
+
                     // Check if we received all expected chunks
                     if (chunks.length < header.totalChunks) {
                         this.showError(
@@ -5020,10 +5012,10 @@
                         this.endReception();
                         return;
                     }
-                    
+
                     // Reconstruct data from chunks
                     const reconstructedData = this.dataProcessor.reconstructData(chunks);
-                    
+
                     // Verify reconstructed data size matches expected size
                     if (reconstructedData.length !== header.totalSize) {
                         this.showError(
@@ -5033,14 +5025,14 @@
                         this.endReception();
                         return;
                     }
-                    
+
                     // Handle the received data based on type
                     if (header.type === 'text') {
                         this.handleReceivedText(reconstructedData);
                     } else if (header.type === 'file') {
                         this.handleReceivedFile(reconstructedData, header.filename);
                     }
-                    
+
                     // Add to transmission history
                     this.transmissionHistory.push({
                         timestamp: new Date(),
@@ -5049,7 +5041,7 @@
                         size: reconstructedData.length,
                         data: reconstructedData
                     });
-                    
+
                     // Show success message with details
                     const sizeKB = (reconstructedData.length / 1024).toFixed(2);
                     const typeLabel = header.type === 'text' ? 'Text' : 'File';
@@ -5057,10 +5049,10 @@
                         `✓ ${typeLabel} received successfully! (${sizeKB} KB)` +
                         (header.filename ? ` - ${header.filename}` : '')
                     );
-                    
+
                     // End reception
                     this.endReception();
-                    
+
                 } catch (error) {
                     this.showError('Failed to process received data: ' + error.message + ' Please try the transmission again.');
                     this.endReception();
@@ -5073,26 +5065,26 @@
              */
             handleDecoderError(error) {
                 let errorMessage = '';
-                
+
                 switch (error.type) {
                     case 'PREAMBLE_TIMEOUT':
                         errorMessage = '⏱ ' + error.message;
                         break;
-                    
+
                     case 'CHECKSUM_MISMATCH':
                         errorMessage = '⚠ ' + error.message;
                         if (error.receivedChunks > 0) {
                             errorMessage += ` (Received ${error.receivedChunks} of ${error.expectedChunks} chunks before errors occurred)`;
                         }
                         break;
-                    
+
                     default:
                         errorMessage = '❌ Decoder error: ' + (error.message || 'Unknown error occurred');
                 }
-                
+
                 this.showError(errorMessage);
                 this.endReception();
-                
+
                 // Restart listening for next transmission
                 setTimeout(() => {
                     this.audioDecoder.startListening();
@@ -5108,10 +5100,10 @@
                 // Decode text from bytes
                 const decoder = new TextDecoder();
                 const text = decoder.decode(data);
-                
+
                 // Display text in UI
                 this.displayText(text);
-                
+
                 // Add download button for text
                 this.addTextDownloadButton(text);
             }
@@ -5124,7 +5116,7 @@
             handleReceivedFile(data, filename) {
                 // Display file information in UI
                 this.displayFileInfo(filename, data.length);
-                
+
                 // Automatically trigger download with filename preservation
                 this.downloadFile(data, filename);
             }
@@ -5145,10 +5137,10 @@
              */
             displayFileInfo(filename, size) {
                 this.dataDisplay.classList.remove('empty');
-                
+
                 const sizeKB = (size / 1024).toFixed(2);
                 const info = `File received: ${filename}\nSize: ${sizeKB} KB\n\nDownload started automatically.`;
-                
+
                 this.dataDisplay.textContent = info;
             }
 
@@ -5159,28 +5151,28 @@
             addTextDownloadButton(text) {
                 // Create download button if it doesn't exist
                 let downloadBtn = document.getElementById('textDownloadBtn');
-                
+
                 if (!downloadBtn) {
                     downloadBtn = document.createElement('button');
                     downloadBtn.id = 'textDownloadBtn';
                     downloadBtn.className = 'send-btn';
                     downloadBtn.textContent = 'Download as Text File';
                     downloadBtn.style.marginTop = '15px';
-                    
+
                     // Insert after data display
                     this.dataDisplay.parentNode.insertBefore(
                         downloadBtn,
                         this.dataDisplay.nextSibling
                     );
                 }
-                
+
                 // Update click handler
                 downloadBtn.onclick = () => {
                     const encoder = new TextEncoder();
                     const data = encoder.encode(text);
                     this.downloadFile(data, 'received-text.txt');
                 };
-                
+
                 // Show the button
                 downloadBtn.style.display = 'block';
             }
@@ -5194,21 +5186,21 @@
                 try {
                     // Create a Blob from the data
                     const blob = new Blob([data], { type: 'application/octet-stream' });
-                    
+
                     // Create a download link
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
                     link.download = filename || 'received-file';
-                    
+
                     // Trigger download
                     document.body.appendChild(link);
                     link.click();
-                    
+
                     // Clean up
                     document.body.removeChild(link);
                     URL.revokeObjectURL(url);
-                    
+
                 } catch (error) {
                     this.showError('Failed to download file: ' + error.message);
                 }
@@ -5219,23 +5211,23 @@
              */
             startReception() {
                 this.isReceiving = true;
-                
+
                 // Lock mode switching
                 this.modeController.lockMode();
-                
+
                 // Clear previous data display
                 this.dataDisplay.classList.add('empty');
                 this.dataDisplay.textContent = 'Receiving data...';
-                
+
                 // Hide any previous download button
                 const downloadBtn = document.getElementById('textDownloadBtn');
                 if (downloadBtn) {
                     downloadBtn.style.display = 'none';
                 }
-                
+
                 // Clear status
                 this.hideStatus();
-                
+
                 // Set up progress tracking
                 this.progressTracker.clearCallbacks();
                 this.progressTracker.onUpdate((progressInfo) => {
@@ -5248,10 +5240,10 @@
              */
             endReception() {
                 this.isReceiving = false;
-                
+
                 // Unlock mode switching
                 this.modeController.unlockMode();
-                
+
                 // Keep progress display visible to show final state
                 // User can see 100% completion
             }
@@ -5263,7 +5255,7 @@
             handleReceiverError(error) {
                 let errorMessage = '';
                 let instructions = '';
-                
+
                 if (error.message.includes('permission denied') || error.message.includes('Permission denied')) {
                     errorMessage = '🎤 Microphone permission denied.';
                     instructions = 'Please click the microphone icon in your browser\'s address bar and allow access, then reload the page.';
@@ -5280,9 +5272,9 @@
                     errorMessage = '❌ Receiver initialization failed.';
                     instructions = error.message || 'An unknown error occurred. Please try refreshing the page.';
                 }
-                
+
                 this.showError(errorMessage + ' ' + instructions);
-                
+
                 // Disable receiver mode if critical error
                 this.modeController.unlockMode();
             }
@@ -5339,15 +5331,15 @@
             dataProcessor = new DataProcessor();
             inputHandler = new InputHandler(dataProcessor);
             emitterController = new EmitterController(modeController, dataProcessor, inputHandler);
-            
+
             // Initialize receiver controller when receiver mode is selected
             let receiverInitialized = false;
-            
+
             // Override mode controller's setMode to initialize receiver on first use
             const originalSetMode = modeController.setMode.bind(modeController);
-            modeController.setMode = function(mode) {
+            modeController.setMode = function (mode) {
                 originalSetMode(mode);
-                
+
                 // Initialize receiver controller when receiver mode is first selected
                 if (mode === 'receiver' && !receiverInitialized) {
                     receiverController = new ReceiverController(modeController, dataProcessor);
@@ -5357,4 +5349,5 @@
         });
     </script>
 </body>
+
 </html>
